@@ -4,12 +4,6 @@ import local.simas.engine.DisplayManager;
 import local.simas.engine.config.WindowConfig;
 import org.lwjgl.*;
 
-import static org.lwjgl.opengl.GL11.GL_RGB;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDrawPixels;
-
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
