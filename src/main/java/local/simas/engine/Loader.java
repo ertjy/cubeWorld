@@ -1,80 +1,102 @@
 package local.simas.engine;
 
+import local.simas.engine.data.LoadedModel;
+import local.simas.engine.data.RawModel;
+import org.eclipse.collections.impl.utility.LazyIterate;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+
 public class Loader {
+    private List<Integer> vaos = new ArrayList<>();
+    private List<Integer> vbos = new ArrayList<>();
 
-    private List<Integer> vaos = new ArrayList<Integer>();
-    private List<Integer> vbos = new ArrayList<Integer>();
+    public LoadedModel loadRawModel(RawModel rawModel) {
+        int vaoId = createVao();
 
-    public RawModel loadToVAO(float[] positions, int[] indices) {
-        int vaoID = createVAO();
-        bindIndicesBuffer(indices);
-        storeDataInAttributeList(0, positions);
-        unbindVAO();
-        return new RawModel(vaoID, indices.length);
-    }
+        float[] positions = LazyIterate.adapt(rawModel.getPositions())
+                .collectFloat(Float::floatValue)
+                .toArray();
 
-    private int createVAO() {
-        int vaoID = GL30.glGenVertexArrays();
-        vaos.add(vaoID);
-        GL30.glBindVertexArray(vaoID);
-        return vaoID;
-    }
+        int[] indices = rawModel.getIndices()
+                .stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
 
-    private void storeDataInAttributeList(int attributeNumber, float[] data) {
-        int vboID = GL15.glGenBuffers();
-        vbos.add(vboID);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
-        FloatBuffer buffer = storeDataInFloatBuffer(data);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attributeNumber, 3, GL11.GL_FLOAT, false, 0,0);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-    }
+        bindPositionBuffer(0, positions);
+        bindIndexBuffer(indices);
 
-    private void unbindVAO() {
-        GL30.glBindVertexArray(0);
+        glBindVertexArray(0);
+
+        return LoadedModel.builder()
+                .vaoId(vaoId)
+                .vertexCount(rawModel.getIndices().size())
+                .build();
     }
 
     public void cleanUp() {
         for(int vao:vaos) {
-            GL30.glDeleteVertexArrays(vao);
+            glDeleteVertexArrays(vao);
         }
 
         for(int vbo:vbos) {
-            GL15.glDeleteBuffers(vbo);
+            glDeleteBuffers(vbo);
         }
     }
 
-    private FloatBuffer storeDataInFloatBuffer(float[] data) {
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
-        buffer.put(data);
+    private void bindPositionBuffer(int attributeIndex, float[] positions) {
+        createVbo(GL_ARRAY_BUFFER);
+
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(positions.length);
+        buffer.put(positions);
         buffer.flip();
-        return buffer;
+
+        glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(attributeIndex, 3, GL_FLOAT, false, 0,0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    private void bindIndicesBuffer(int[] indices) {
-        int vboID = GL15.glGenBuffers();
-        vbos.add(vboID);
-        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
-        IntBuffer buffer = storeDataInIntBuffer(indices);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+    private void bindIndexBuffer(int[] indices) {
+        createVbo(GL_ELEMENT_ARRAY_BUFFER);
+
+        IntBuffer buffer = BufferUtils.createIntBuffer(indices.length);
+        buffer.put(indices);
+        buffer.flip();
+
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     }
 
-    private IntBuffer storeDataInIntBuffer(int[] data) {
-        IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
-        buffer.put(data);
-        buffer.flip();
-        return buffer;
+    private int createVao() {
+        int vaoId = glGenVertexArrays();
+        vaos.add(vaoId);
+
+        glBindVertexArray(vaoId);
+
+        return vaoId;
+    }
+
+    private int createVbo(int target) {
+        int vboId = glGenBuffers();
+        vbos.add(vboId);
+
+        glBindBuffer(target, vboId);
+
+        return vboId;
     }
 }

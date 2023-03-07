@@ -1,22 +1,32 @@
 package local.simas.engine;
 
+import local.simas.engine.data.LoadedModel;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20C.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
 public class Renderer {
-
     public void prepare() {
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-        GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-
+        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glClear(GL11.GL_COLOR_BUFFER_BIT);
     }
 
-    public void render(RawModel model) {
-        GL30.glBindVertexArray(model.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(0);
-        GL30.glBindVertexArray(0);
+    public void render(LoadedModel model) {
+        glBindVertexArray(model.getVaoId());
+        glEnableVertexAttribArray(0);
+
+        glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+
+        glDisableVertexAttribArray(0);
+        glBindVertexArray(0);
     }
 }

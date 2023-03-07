@@ -2,9 +2,11 @@ package local.simas;
 
 import local.simas.engine.DisplayManager;
 import local.simas.engine.Loader;
-import local.simas.engine.RawModel;
+import local.simas.engine.data.LoadedModel;
 import local.simas.engine.Renderer;
 import local.simas.engine.config.WindowConfig;
+import local.simas.engine.data.RawModel;
+import org.joml.Vector3f;
 import org.lwjgl.*;
 
 public class Main {
@@ -24,23 +26,23 @@ public class Main {
         Loader loader = new Loader();
         Renderer renderer = new Renderer();
 
-        float[] vertices = {
-                // Left bottom triangle
-                -0.5f, 0.5f, 0f,
-                -0.5f, -0.5f, 0f,
-                0.5f, -0.5f, 0f,
-                // Right top triangle
-                0.5f, -0.5f, 0f,
-                0.5f, 0.5f, 0f,
-                -0.5f, 0.5f, 0f
-        };
+        RawModel rawModel = new RawModel();
+        rawModel.addPosition(new Vector3f(-0.5f, 0.5f, 0f));
+        rawModel.addPosition(new Vector3f(-0.5f, -0.5f, 0f));
+        rawModel.addPosition(new Vector3f(0.5f, -0.5f, 0f));
+        rawModel.addPosition(new Vector3f(0.5f, 0.5f, 0f));
 
-        int[] indices = {
-                0, 1, 3,     //top left triangle
-                3, 1, 2      //bottom right triangle
-        };
+        // bottom left triangle
+        rawModel.addIndex(0);
+        rawModel.addIndex(1);
+        rawModel.addIndex(2);
 
-        RawModel model = loader.loadToVAO(vertices, indices);
+        // top right triangle
+        rawModel.addIndex(0);
+        rawModel.addIndex(2);
+        rawModel.addIndex(3);
+
+        LoadedModel model = loader.loadRawModel(rawModel);
 
         while (!DisplayManager.windowShouldClose()) {
             renderer.prepare();
