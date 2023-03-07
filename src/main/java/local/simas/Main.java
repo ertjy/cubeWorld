@@ -35,14 +35,17 @@ public class Main {
                 -0.5f, 0.5f, 0f
         };
 
-        RawModel model = loader.loadToVAO(vertices);
+        int[] indices = {
+                0, 1, 3,     //top left triangle
+                3, 1, 2      //bottom right triangle
+        };
+
+        RawModel model = loader.loadToVAO(vertices, indices);
 
         while (!DisplayManager.windowShouldClose()) {
-            //either renderer.render is not rendering the triangles or updateWindow is not updating the window correctly
             renderer.prepare();
             renderer.render(model);
             DisplayManager.updateWindow();
-            //System.out.println("window updated");
         }
 
         loader.cleanUp();
