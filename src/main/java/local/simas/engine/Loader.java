@@ -5,6 +5,7 @@ import local.simas.engine.data.RawModel;
 import org.eclipse.collections.impl.utility.LazyIterate;
 import org.lwjgl.BufferUtils;
 
+import java.io.FileInputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
