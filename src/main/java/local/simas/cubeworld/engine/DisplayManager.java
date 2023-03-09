@@ -1,6 +1,6 @@
-package local.simas.engine;
+package local.simas.cubeworld.engine;
 
-import local.simas.engine.config.WindowConfig;
+import local.simas.cubeworld.engine.config.WindowConfig;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;

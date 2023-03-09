@@ -1,11 +1,10 @@
-package local.simas.engine;
+package local.simas.cubeworld.engine;
 
-import local.simas.engine.data.LoadedModel;
-import local.simas.engine.data.RawModel;
+import local.simas.cubeworld.engine.data.LoadedModel;
+import local.simas.cubeworld.engine.data.RawModel;
 import org.eclipse.collections.impl.utility.LazyIterate;
 import org.lwjgl.BufferUtils;
 
-import java.io.FileInputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;

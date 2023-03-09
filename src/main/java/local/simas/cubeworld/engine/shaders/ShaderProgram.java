@@ -1,10 +1,9 @@
-package local.simas.engine.shaders;
+package local.simas.cubeworld.engine.shaders;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public abstract class ShaderProgram {

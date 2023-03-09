@@ -1,9 +1,7 @@
-package local.simas.engine;
+package local.simas.cubeworld.engine;
 
-import local.simas.engine.data.LoadedModel;
+import local.simas.cubeworld.engine.data.LoadedModel;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;

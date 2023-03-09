@@ -1,4 +1,4 @@
-package local.simas.engine.config;
+package local.simas.cubeworld.engine.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

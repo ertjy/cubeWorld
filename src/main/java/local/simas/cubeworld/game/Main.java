@@ -1,20 +1,14 @@
-package local.simas;
+package local.simas.cubeworld.game;
 
-import local.simas.engine.DisplayManager;
-import local.simas.engine.Loader;
-import local.simas.engine.data.LoadedModel;
-import local.simas.engine.Renderer;
-import local.simas.engine.config.WindowConfig;
-import local.simas.engine.data.RawModel;
-import local.simas.engine.shaders.StaticShader;
+import local.simas.cubeworld.engine.DisplayManager;
+import local.simas.cubeworld.engine.Loader;
+import local.simas.cubeworld.engine.data.LoadedModel;
+import local.simas.cubeworld.engine.Renderer;
+import local.simas.cubeworld.engine.config.WindowConfig;
+import local.simas.cubeworld.engine.data.RawModel;
+import local.simas.cubeworld.engine.shaders.StaticShader;
 import org.joml.Vector3f;
 import org.lwjgl.*;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.BufferUtils.*;
 
 public class Main {
     public static void main(String[] args) {

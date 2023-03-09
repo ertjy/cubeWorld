@@ -1,4 +1,4 @@
-package local.simas.engine.data;
+package local.simas.cubeworld.engine.data;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

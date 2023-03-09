@@ -1,4 +1,4 @@
-package local.simas.engine.shaders;
+package local.simas.cubeworld.engine.shaders;
 
 public class StaticShader extends ShaderProgram{
 
