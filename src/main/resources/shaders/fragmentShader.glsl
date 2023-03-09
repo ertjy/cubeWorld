@@ -1,4 +1,5 @@
 #version 120
+
 in vec3 colour;
 varying out vec4 out_colour;
 

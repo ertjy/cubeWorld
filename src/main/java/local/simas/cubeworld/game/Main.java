@@ -1,19 +1,19 @@
 package local.simas.cubeworld.game;
 
 import local.simas.cubeworld.engine.DisplayManager;
-import local.simas.cubeworld.engine.Loader;
+import local.simas.cubeworld.engine.ModelLoader;
 import local.simas.cubeworld.engine.data.LoadedModel;
 import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
 import local.simas.cubeworld.engine.data.RawModel;
-import local.simas.cubeworld.engine.shaders.StaticShader;
+import local.simas.cubeworld.engine.shader.ShaderProgram;
+import local.simas.cubeworld.game.shader.DefaultShaderProgram;
 import org.joml.Vector3f;
-import org.lwjgl.*;
+
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-        //System.out.println("OpenGL version " + glGetString(GL_VERSION));
         WindowConfig windowConfig = WindowConfig.builder()
                 .width(1280)
                 .height(720)
@@ -24,11 +24,19 @@ public class Main {
         DisplayManager.createWindow(windowConfig);
         DisplayManager.showWindow();
 
-        Loader loader = new Loader();
-        Renderer renderer = new Renderer();
+        ShaderProgram shaderProgram = null;
 
-        StaticShader shader = new StaticShader();
+        try {
+            shaderProgram = new DefaultShaderProgram();
+        } catch (IOException ex) {
+            System.exit(1);
+        }
 
+        Renderer renderer = Renderer.builder()
+                .shaderProgram(shaderProgram)
+                .build();
+
+        ModelLoader modelLoader = new ModelLoader();
         RawModel rawModel = new RawModel();
         rawModel.addPosition(new Vector3f(-0.5f, 0.5f, 0f));
         rawModel.addPosition(new Vector3f(-0.5f, -0.5f, 0f));
@@ -45,17 +53,16 @@ public class Main {
         rawModel.addIndex(2);
         rawModel.addIndex(3);
 
-        LoadedModel model = loader.loadRawModel(rawModel);
+        LoadedModel model = modelLoader.loadRawModel(rawModel);
 
         while (!DisplayManager.windowShouldClose()) {
             renderer.prepare();
-            shader.start();
             renderer.render(model);
-            shader.start();
             DisplayManager.updateWindow();
         }
-        shader.cleanUp();
-        loader.cleanUp();
+
+        modelLoader.cleanUp();
+        renderer.cleanUp();
         DisplayManager.closeWindow();
     }
 }

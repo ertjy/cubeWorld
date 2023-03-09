@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
+import java.util.Objects;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
@@ -55,13 +56,13 @@ public class DisplayManager {
         }
 
         if (windowConfig.getShouldCenter()) {
-            try ( MemoryStack stack = stackPush() ) {
+            try (MemoryStack stack = stackPush()) {
                 IntBuffer pWidth = stack.mallocInt(1);
                 IntBuffer pHeight = stack.mallocInt(1);
 
                 glfwGetWindowSize(windowHandle, pWidth, pHeight);
 
-                GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+                GLFWVidMode videoMode = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor()));
 
                 glfwSetWindowPos(
                         windowHandle,
@@ -112,6 +113,6 @@ public class DisplayManager {
         glfwDestroyWindow(windowHandle);
 
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 }
