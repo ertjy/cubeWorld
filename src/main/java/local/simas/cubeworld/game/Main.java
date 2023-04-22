@@ -6,7 +6,9 @@ import local.simas.cubeworld.engine.data.LoadedModel;
 import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
 import local.simas.cubeworld.engine.data.RawModel;
+import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
+import local.simas.cubeworld.engine.textures.ModelTexture;
 import local.simas.cubeworld.game.shader.DefaultShaderProgram;
 import org.joml.Vector3f;
 
@@ -55,9 +57,14 @@ public class Main {
 
         LoadedModel model = modelLoader.loadRawModel(rawModel);
 
+        ModelTexture texture = new ModelTexture(modelLoader.loadTexture("image"));
+        TexturedModel texturedModel = new TexturedModel(rawModel, texture);
+
+
+
         while (!DisplayManager.windowShouldClose()) {
             renderer.prepare();
-            renderer.render(model);
+            renderer.render(texturedModel, model);
             DisplayManager.updateWindow();
         }
 

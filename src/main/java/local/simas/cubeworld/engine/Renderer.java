@@ -1,9 +1,10 @@
 package local.simas.cubeworld.engine;
 
 import local.simas.cubeworld.engine.data.LoadedModel;
+import local.simas.cubeworld.engine.data.RawModel;
+import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import lombok.Builder;
-import lombok.Setter;
 import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
@@ -24,13 +25,13 @@ public class Renderer {
         glClear(GL11.GL_COLOR_BUFFER_BIT);
     }
 
-    public void render(LoadedModel model) {
+    public void render(TexturedModel texturedModel, LoadedModel loadedModel) {
         shaderProgram.start();
 
-        glBindVertexArray(model.getVaoId());
+        glBindVertexArray(loadedModel.getVaoId());
         glEnableVertexAttribArray(0);
 
-        glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, loadedModel.getVertexCount(), GL_UNSIGNED_INT, 0);
 
         glDisableVertexAttribArray(0);
         glBindVertexArray(0);
