@@ -1,31 +1,22 @@
 package local.simas.cubeworld.engine.shader;
 
 import local.simas.cubeworld.engine.helper.FileHelper;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 
 import java.io.*;
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
-import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import static org.lwjgl.opengl.GL20.glAttachShader;
-import static org.lwjgl.opengl.GL20.glBindAttribLocation;
-import static org.lwjgl.opengl.GL20.glCompileShader;
-import static org.lwjgl.opengl.GL20.glCreateProgram;
-import static org.lwjgl.opengl.GL20.glCreateShader;
-import static org.lwjgl.opengl.GL20.glDeleteProgram;
-import static org.lwjgl.opengl.GL20.glDeleteShader;
-import static org.lwjgl.opengl.GL20.glDetachShader;
-import static org.lwjgl.opengl.GL20.glGetShaderi;
-import static org.lwjgl.opengl.GL20.glLinkProgram;
-import static org.lwjgl.opengl.GL20.glShaderSource;
-import static org.lwjgl.opengl.GL20.glUseProgram;
-import static org.lwjgl.opengl.GL20.glValidateProgram;
+import static org.lwjgl.opengl.GL20.*;
 
 public abstract class ShaderProgram {
     private int programId;
     private int vertexShaderId;
     private int fragmentShaderId;
+
+    private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 
     public ShaderProgram(String vertexFile, String fragmentFile) throws IOException {
         vertexShaderId = loadShader(vertexFile, GL_VERTEX_SHADER);
@@ -37,7 +28,16 @@ public abstract class ShaderProgram {
 
         glLinkProgram(programId);
         glValidateProgram(programId);
+        getAllUniformLocations();
     }
+
+    protected abstract void getAllUniformLocations();
+
+    protected int getUniformFromLocation(String uniformName) {
+        return glGetUniformLocation(programId, uniformName);
+    }
+
+
 
     public void start(){
         glUseProgram(programId);
@@ -62,6 +62,28 @@ public abstract class ShaderProgram {
 
     protected void bindAttribute(int attribute, String name) {
         glBindAttribLocation(programId, attribute, name);
+    }
+
+    protected void loadFloat(int location, float value) {
+        glUniform1f(location, value);
+    }
+
+    protected void loadVector(int location, Vector3f vector) {
+        glUniform3f(location, vector.x, vector.y, vector.z);
+    }
+
+    protected void loadBoolean(int location, boolean value) {
+        float toLoad = 0;
+        if(value) {
+            toLoad = 1;
+        }
+        glUniform1f(location, toLoad);
+    }
+
+    protected void loadMatrix(int location, Matrix4f matrix) {
+        matrix.set(matrixBuffer);
+        matrixBuffer.flip();
+        glUniformMatrix4fv(location, false, matrixBuffer);
     }
 
     private int loadShader(String filename, int type) throws IOException {
