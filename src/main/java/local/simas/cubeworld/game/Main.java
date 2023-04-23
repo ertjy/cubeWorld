@@ -55,7 +55,14 @@ public class Main {
         rawModel.addIndex(2);
         rawModel.addIndex(3);
 
-        LoadedModel model = modelLoader.loadRawModel(rawModel);
+        float[] textureCoords = {
+                0,0,    //V0
+                0,1,    //V1
+                1,1,    //V2
+                1,0,    //V3
+        };
+
+        LoadedModel model = modelLoader.loadRawModel(rawModel, textureCoords);
 
         ModelTexture texture = new ModelTexture(modelLoader.loadTexture("image"));
         TexturedModel texturedModel = new TexturedModel(rawModel, texture);

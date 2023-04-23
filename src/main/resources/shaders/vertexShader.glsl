@@ -1,11 +1,11 @@
 #version 120
 
 in vec3 position;
-varying out vec3 colour;
+in vec2 textureCoords;
 
-uniform mat4 transformationMatrix;
+varying out vec2 pass_textureCoords;
 
 void main() {
+    pass_textureCoords = textureCoords;
     gl_Position = vec4(position, 1.0);
-    colour = vec3(position.x+0.5, 1.0, position.y+0.5);
 }

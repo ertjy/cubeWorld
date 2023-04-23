@@ -4,6 +4,7 @@ import local.simas.cubeworld.engine.helper.FileHelper;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL20;
 
 import java.io.*;
 import java.nio.FloatBuffer;
@@ -93,6 +94,7 @@ public abstract class ShaderProgram {
         glShaderSource(shaderId, shaderSource);
         glCompileShader(shaderId);
 
+        System.out.println(glGetShaderInfoLog(shaderId,GL20.glGetShaderi(shaderId,GL20.GL_INFO_LOG_LENGTH)));
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
             throw new IllegalStateException("Failed to compile shader");
         }

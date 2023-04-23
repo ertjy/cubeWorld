@@ -1,17 +1,14 @@
 package local.simas.cubeworld.engine;
 
 import local.simas.cubeworld.engine.data.LoadedModel;
-import local.simas.cubeworld.engine.data.RawModel;
 import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import lombok.Builder;
 import org.lwjgl.opengl.GL11;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20C.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -30,10 +27,14 @@ public class Renderer {
 
         glBindVertexArray(loadedModel.getVaoId());
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getId());
 
         glDrawElements(GL_TRIANGLES, loadedModel.getVertexCount(), GL_UNSIGNED_INT, 0);
 
         glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
         glBindVertexArray(0);
 
         shaderProgram.stop();

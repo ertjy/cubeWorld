@@ -32,7 +32,7 @@ public class ModelLoader {
     private List<Integer> vbos = new ArrayList<>();
     private List<Integer> textures = new ArrayList<Integer>();
 
-    public LoadedModel loadRawModel(RawModel rawModel) {
+    public LoadedModel loadRawModel(RawModel rawModel, float[] textureCoords) {
         int vaoId = createVao();
 
         float[] positions = LazyIterate.adapt(rawModel.getPositions())
@@ -44,7 +44,8 @@ public class ModelLoader {
                 .mapToInt(Integer::intValue)
                 .toArray();
 
-        bindPositionBuffer(0, positions);
+        bindPositionBuffer(0, 3, positions);
+        bindPositionBuffer(1, 2, textureCoords);
         bindIndexBuffer(indices);
 
         glBindVertexArray(0);
@@ -96,7 +97,7 @@ public class ModelLoader {
         }
     }
 
-    private void bindPositionBuffer(int attributeIndex, float[] positions) {
+    private void bindPositionBuffer(int attributeIndex, int coordinateSize, float[] positions) {
         createVbo(GL_ARRAY_BUFFER);
 
         FloatBuffer buffer = BufferUtils.createFloatBuffer(positions.length);
@@ -104,7 +105,7 @@ public class ModelLoader {
         buffer.flip();
 
         glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
-        glVertexAttribPointer(attributeIndex, 3, GL_FLOAT, false, 0,0);
+        glVertexAttribPointer(attributeIndex, coordinateSize, GL_FLOAT, false, 0,0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
