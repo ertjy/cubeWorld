@@ -32,6 +32,8 @@ public abstract class ShaderProgram {
         getAllUniformLocations();
     }
 
+    public abstract void loadTransformationMatrix(Matrix4f transformationMatrix);
+
     protected abstract void getAllUniformLocations();
 
     protected int getUniformFromLocation(String uniformName) {
@@ -82,9 +84,30 @@ public abstract class ShaderProgram {
     }
 
     protected void loadMatrix(int location, Matrix4f matrix) {
-        matrix.set(matrixBuffer);
+        matrixToBuffer(matrix, 0, matrixBuffer);
+//        matrix.get(matrixBuffer);
         matrixBuffer.flip();
         glUniformMatrix4fv(location, false, matrixBuffer);
+    }
+
+    private static void matrixToBuffer(Matrix4f m, int offset, FloatBuffer dest)
+    {
+        dest.put(m.m00());
+        dest.put(m.m01());
+        dest.put(m.m02());
+        dest.put(m.m03());
+        dest.put(m.m10());
+        dest.put(m.m11());
+        dest.put(m.m12());
+        dest.put(m.m13());
+        dest.put(m.m20());
+        dest.put(m.m21());
+        dest.put(m.m22());
+        dest.put(m.m23());
+        dest.put(m.m30());
+        dest.put(m.m31());
+        dest.put(m.m32());
+        dest.put(m.m33());
     }
 
     private int loadShader(String filename, int type) throws IOException {

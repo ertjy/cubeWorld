@@ -1,6 +1,5 @@
 #version 120
-
-varying vec2 pass_textureCoords;
+in vec2 pass_textureCoords;
 
 varying out vec4 out_colour;
 

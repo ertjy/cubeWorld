@@ -1,13 +1,13 @@
 package local.simas.cubeworld.game;
 
 import local.simas.cubeworld.engine.DisplayManager;
+import local.simas.cubeworld.engine.entities.Entity;
 import local.simas.cubeworld.engine.loader.ModelLoader;
 import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
 import local.simas.cubeworld.engine.data.RawModel;
 import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.loader.TextureLoader;
-import local.simas.cubeworld.engine.shader.ShaderProgram;
 import local.simas.cubeworld.game.shader.DefaultShaderProgram;
 import org.joml.Vector3f;
 
@@ -16,7 +16,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         WindowConfig windowConfig = WindowConfig.builder()
-                .width(1280)
+                .width(720)
                 .height(720)
                 .title("LWJGL Example")
                 .shouldCenter(true)
@@ -25,7 +25,7 @@ public class Main {
         DisplayManager.createWindow(windowConfig);
         DisplayManager.showWindow();
 
-        ShaderProgram shaderProgram = null;
+        DefaultShaderProgram shaderProgram = null;
 
         try {
             shaderProgram = new DefaultShaderProgram();
@@ -68,9 +68,14 @@ public class Main {
                 .texture(textureLoader.loadTexture("res/image.png"))
                 .build();
 
+        Entity entity = Entity.builder()
+                .model(texturedModel)
+                .build();
+
         while (!DisplayManager.windowShouldClose()) {
+            entity.getRotation().z += 5;
             renderer.prepare();
-            renderer.render(texturedModel);
+            renderer.render(entity);
             DisplayManager.updateWindow();
         }
 
