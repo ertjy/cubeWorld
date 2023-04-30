@@ -1,12 +1,10 @@
-package local.simas.cubeworld.engine;
+package local.simas.cubeworld.engine.loader;
 
 import local.simas.cubeworld.engine.data.LoadedModel;
 import local.simas.cubeworld.engine.data.RawModel;
 import org.eclipse.collections.impl.utility.LazyIterate;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.system.MemoryStack;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -24,13 +22,10 @@ import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import static org.lwjgl.stb.STBImage.stbi_failure_reason;
-import static org.lwjgl.stb.STBImage.stbi_load;
 
 public class ModelLoader {
-    private List<Integer> vaos = new ArrayList<>();
-    private List<Integer> vbos = new ArrayList<>();
-    private List<Integer> textures = new ArrayList<Integer>();
+    private final List<Integer> vaos = new ArrayList<>();
+    private final List<Integer> vbos = new ArrayList<>();
 
     public LoadedModel loadRawModel(RawModel rawModel, float[] textureCoords) {
         int vaoId = createVao();
@@ -56,43 +51,12 @@ public class ModelLoader {
                 .build();
     }
 
-    public int loadTexture(String path) {
-
-        int textureID;
-        int width, height;
-        ByteBuffer image;
-
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer w = stack.mallocInt(1);
-            IntBuffer h = stack.mallocInt(1);
-            IntBuffer comp = stack.mallocInt(1);
-
-            image = stbi_load("res/"+path+".png", w, h, comp, 4);
-            if (image == null) {
-                System.out.println("Failed to load texture file: "+path+"\n" +
-                        stbi_failure_reason()
-                );
-            }
-            width = w.get();
-            height = h.get();
-        }
-
-        textureID = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        textures.add(textureID);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); //sets MINIFICATION filtering to nearest
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //sets MAGNIFICATION filtering to nearest
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-        return textureID;
-    }
-
     public void cleanUp() {
-        for(int vao:vaos) {
+        for(int vao : vaos) {
             glDeleteVertexArrays(vao);
         }
 
-        for(int vbo:vbos) {
+        for(int vbo : vbos) {
             glDeleteBuffers(vbo);
         }
     }

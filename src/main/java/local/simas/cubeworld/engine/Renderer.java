@@ -1,6 +1,5 @@
 package local.simas.cubeworld.engine;
 
-import local.simas.cubeworld.engine.data.LoadedModel;
 import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import lombok.Builder;
@@ -22,16 +21,16 @@ public class Renderer {
         glClear(GL11.GL_COLOR_BUFFER_BIT);
     }
 
-    public void render(TexturedModel texturedModel, LoadedModel loadedModel) {
+    public void render(TexturedModel texturedModel) {
         shaderProgram.start();
 
-        glBindVertexArray(loadedModel.getVaoId());
+        glBindVertexArray(texturedModel.getModel().getVaoId());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getId());
+        glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());
 
-        glDrawElements(GL_TRIANGLES, loadedModel.getVertexCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, texturedModel.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);

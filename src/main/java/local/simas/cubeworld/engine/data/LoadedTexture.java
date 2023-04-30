@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TexturedModel {
-    private LoadedModel model;
-    private LoadedTexture texture;
+public class LoadedTexture {
+    private int textureId;
 }
