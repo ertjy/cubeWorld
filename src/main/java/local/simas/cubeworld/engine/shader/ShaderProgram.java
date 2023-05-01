@@ -33,6 +33,8 @@ public abstract class ShaderProgram {
     }
 
     public abstract void loadTransformationMatrix(Matrix4f transformationMatrix);
+    public abstract void loadProjectionMatrix(Matrix4f projectionMatrix);
+    public abstract void loadViewMatrix(Matrix4f viewMatrix);
 
     protected abstract void getAllUniformLocations();
 
@@ -84,13 +86,12 @@ public abstract class ShaderProgram {
     }
 
     protected void loadMatrix(int location, Matrix4f matrix) {
-        matrixToBuffer(matrix, 0, matrixBuffer);
-//        matrix.get(matrixBuffer);
+        matrixToBuffer(matrix, matrixBuffer);
         matrixBuffer.flip();
         glUniformMatrix4fv(location, false, matrixBuffer);
     }
 
-    private static void matrixToBuffer(Matrix4f m, int offset, FloatBuffer dest)
+    private static void matrixToBuffer(Matrix4f m, FloatBuffer dest)
     {
         dest.put(m.m00());
         dest.put(m.m01());

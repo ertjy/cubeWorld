@@ -26,6 +26,6 @@ public class Entity {
     private Vector3f scale = new Vector3f(1f, 1f, 1f);
 
     public Matrix4f getTransformationMatrix() {
-        return MathHelper.createTransformationMatrix(position, rotation, scale);
+        return MathHelper.createTransformationMatrix(this);
     }
 }

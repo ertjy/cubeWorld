@@ -10,6 +10,8 @@ public class DefaultShaderProgram extends ShaderProgram {
     private static final String FRAGMENT_SHADER_FILE = "shaders/fragmentShader.glsl";
 
     private int transformationMatrixLocation;
+    private int projectionMatrixLocation;
+    private int viewMatrixLocation;
 
     public DefaultShaderProgram() throws IOException {
         super(VERTEX_SHADER_FILE, FRAGMENT_SHADER_FILE);
@@ -24,10 +26,22 @@ public class DefaultShaderProgram extends ShaderProgram {
     @Override
     protected void getAllUniformLocations() {
         transformationMatrixLocation = super.getUniformFromLocation("transformationMatrix");
+        projectionMatrixLocation = super.getUniformFromLocation("projectionMatrix");
+        viewMatrixLocation = super.getUniformFromLocation("viewMatrix");
     }
 
     @Override
     public void loadTransformationMatrix(Matrix4f matrix) {
         super.loadMatrix(transformationMatrixLocation, matrix);
+    }
+
+    @Override
+    public void loadProjectionMatrix(Matrix4f matrix) {
+        super.loadMatrix(projectionMatrixLocation, matrix);
+    }
+
+    @Override
+    public void loadViewMatrix(Matrix4f matrix) {
+        super.loadMatrix(viewMatrixLocation, matrix);
     }
 }

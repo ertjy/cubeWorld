@@ -1,17 +1,23 @@
 package local.simas.cubeworld.engine.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class WindowConfig {
-    private Integer width;
-    private Integer height;
+    public Integer width;
+    public Integer height;
     private String title;
     private Boolean shouldCenter;
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
 }

@@ -1,7 +1,9 @@
 package local.simas.cubeworld.engine;
 
 import local.simas.cubeworld.engine.data.TexturedModel;
+import local.simas.cubeworld.engine.entities.Camera;
 import local.simas.cubeworld.engine.entities.Entity;
+import local.simas.cubeworld.engine.helper.MathHelper;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import lombok.Builder;
 import org.joml.Matrix4f;
@@ -16,7 +18,19 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 @Builder
 public class Renderer {
+    private static final float FOV = 90;
+    private static final float NEAR_PLANE = 0.1f;
+    private static final float FAR_PLANE = 1000f;
+
     private ShaderProgram shaderProgram;
+    private Camera camera;
+
+    public Renderer(ShaderProgram shaderProgram, Camera camera) {
+        this.shaderProgram = shaderProgram;
+        this.camera = camera;
+
+        this.loadProjectionMatrix();
+    }
 
     public void prepare() {
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
@@ -26,6 +40,8 @@ public class Renderer {
     public void render(Entity entity) {
         TexturedModel texturedModel = entity.getModel();
         Matrix4f transformationMatrix = entity.getTransformationMatrix();
+        Matrix4f viewMatrix = camera.getViewMatrix();
+
         shaderProgram.start();
 
         glBindVertexArray(texturedModel.getModel().getVaoId());
@@ -33,6 +49,7 @@ public class Renderer {
         glEnableVertexAttribArray(1);
 
         shaderProgram.loadTransformationMatrix(transformationMatrix);
+        shaderProgram.loadViewMatrix(viewMatrix);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());
@@ -47,11 +64,28 @@ public class Renderer {
     }
 
     public void setShaderProgram(ShaderProgram shaderProgram) {
-        this.shaderProgram.cleanUp();
+        if (this.shaderProgram != null) {
+            this.shaderProgram.cleanUp();
+        }
+
         this.shaderProgram = shaderProgram;
+        this.loadProjectionMatrix();
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+        this.loadProjectionMatrix();
     }
 
     public void cleanUp() {
         shaderProgram.cleanUp();
+    }
+
+    private void loadProjectionMatrix() {
+        Matrix4f projectionMatrix = MathHelper.createProjectionMatrix(DisplayManager.getWindowConfig(), camera);
+
+        shaderProgram.start();
+        shaderProgram.loadProjectionMatrix(projectionMatrix);
+        shaderProgram.stop();
     }
 }

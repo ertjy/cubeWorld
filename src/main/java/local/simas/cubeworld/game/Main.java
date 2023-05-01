@@ -1,6 +1,7 @@
 package local.simas.cubeworld.game;
 
 import local.simas.cubeworld.engine.DisplayManager;
+import local.simas.cubeworld.engine.entities.Camera;
 import local.simas.cubeworld.engine.entities.Entity;
 import local.simas.cubeworld.engine.loader.ModelLoader;
 import local.simas.cubeworld.engine.Renderer;
@@ -33,8 +34,11 @@ public class Main {
             System.exit(1);
         }
 
+        Camera camera = Camera.builder().build();
+
         Renderer renderer = Renderer.builder()
                 .shaderProgram(shaderProgram)
+                .camera(camera)
                 .build();
 
         ModelLoader modelLoader = new ModelLoader();
@@ -69,13 +73,18 @@ public class Main {
                 .build();
 
         Entity entity = Entity.builder()
+                .position(new Vector3f(0, 0, -2))
                 .model(texturedModel)
                 .build();
 
         while (!DisplayManager.windowShouldClose()) {
-            entity.getRotation().z += 5;
+            camera.move();
+            entity.getPosition().add(new Vector3f(0f, 0f, 0.1f * DisplayManager.getCurrentFrameTime()));
+            entity.getRotation().add(new Vector3f(10f, 20f, 30f).mul(DisplayManager.getCurrentFrameTime()));
+
             renderer.prepare();
             renderer.render(entity);
+
             DisplayManager.updateWindow();
         }
 
