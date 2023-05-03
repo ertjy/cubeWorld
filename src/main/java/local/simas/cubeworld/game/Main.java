@@ -27,15 +27,20 @@ public class Main {
         DisplayManager.createWindow(windowConfig);
         DisplayManager.showWindow();
 
-        DefaultShaderProgram shaderProgram = null;
-        RawModel monkeyModel = null;
-
         RawModelLoader rawModelLoader = new RawModelLoader();
+        ModelLoader modelLoader = new ModelLoader();
+        TextureLoader textureLoader = new TextureLoader();
+
+        DefaultShaderProgram shaderProgram = null;
+        TexturedModel texturedModel = null;
 
         try {
             shaderProgram = new DefaultShaderProgram();
 
-            monkeyModel = rawModelLoader.loadRawModelFromFile("models/monkey.obj");
+            texturedModel = TexturedModel.builder()
+                    .model(modelLoader.loadRawModel(rawModelLoader.loadRawModelFromFile("models/monkey.obj")))
+                    .texture(textureLoader.loadTextureFromFile("textures/monkey.jpg"))
+                    .build();
         } catch (IOException ex) {
             System.exit(1);
         }
@@ -45,14 +50,6 @@ public class Main {
         Renderer renderer = Renderer.builder()
                 .shaderProgram(shaderProgram)
                 .camera(camera)
-                .build();
-
-        ModelLoader modelLoader = new ModelLoader();
-        TextureLoader textureLoader = new TextureLoader();
-
-        TexturedModel texturedModel = TexturedModel.builder()
-                .model(modelLoader.loadRawModel(monkeyModel))
-                .texture(textureLoader.loadTexture("res/image.png"))
                 .build();
 
         Entity entity = Entity.builder()

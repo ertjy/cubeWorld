@@ -1,10 +1,12 @@
 package local.simas.cubeworld.engine.loader;
 
 import local.simas.cubeworld.engine.data.LoadedTexture;
-import org.lwjgl.system.MemoryStack;
+import local.simas.cubeworld.engine.helper.FileHelper;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,38 +21,33 @@ import static org.lwjgl.opengl.GL11.glDeleteTextures;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.stb.STBImage.stbi_failure_reason;
-import static org.lwjgl.stb.STBImage.stbi_load;
 
 public class TextureLoader {
     private final List<Integer> textures = new ArrayList<>();
 
-    public LoadedTexture loadTexture(String path) {
-        int textureId;
-        int width, height;
-        ByteBuffer image;
+    public LoadedTexture loadTextureFromFile(String fileName) throws IOException {
+        BufferedImage image = ImageIO.read(FileHelper.getResourceAsStream(fileName));
 
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer w = stack.mallocInt(1);
-            IntBuffer h = stack.mallocInt(1);
-            IntBuffer comp = stack.mallocInt(1);
+        int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+        ByteBuffer buffer = ByteBuffer.allocateDirect(pixels.length * 4);
 
-            image = stbi_load(path, w, h, comp, 4);
-            if (image == null) {
-                throw new RuntimeException(String.format("Failed to load texture file with path '%s' and reason: %s", path, stbi_failure_reason()));
-            }
-            width = w.get();
-            height = h.get();
+        for (int pixel : pixels) {
+            buffer.put((byte) ((pixel >> 16) & 0xFF));
+            buffer.put((byte) ((pixel >> 8) & 0xFF));
+            buffer.put((byte) (pixel & 0xFF));
+            buffer.put((byte) ((pixel >> 24) & 0xFF));
         }
 
-        textureId = glGenTextures();
+        buffer.flip();
+
+        int textureId = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, textureId);
 
         textures.add(textureId);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); //sets MINIFICATION filtering to nearest
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //sets MAGNIFICATION filtering to nearest
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
         return LoadedTexture.builder()
                 .textureId(textureId)
