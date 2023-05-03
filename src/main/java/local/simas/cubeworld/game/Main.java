@@ -8,6 +8,7 @@ import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
 import local.simas.cubeworld.engine.data.RawModel;
 import local.simas.cubeworld.engine.data.TexturedModel;
+import local.simas.cubeworld.engine.loader.RawModelLoader;
 import local.simas.cubeworld.engine.loader.TextureLoader;
 import local.simas.cubeworld.game.shader.DefaultShaderProgram;
 import org.joml.Vector3f;
@@ -27,9 +28,14 @@ public class Main {
         DisplayManager.showWindow();
 
         DefaultShaderProgram shaderProgram = null;
+        RawModel monkeyModel = null;
+
+        RawModelLoader rawModelLoader = new RawModelLoader();
 
         try {
             shaderProgram = new DefaultShaderProgram();
+
+            monkeyModel = rawModelLoader.loadRawModelFromFile("models/monkey.obj");
         } catch (IOException ex) {
             System.exit(1);
         }
@@ -44,31 +50,8 @@ public class Main {
         ModelLoader modelLoader = new ModelLoader();
         TextureLoader textureLoader = new TextureLoader();
 
-        RawModel rawModel = new RawModel();
-        rawModel.addPosition(new Vector3f(-0.5f, 0.5f, 0f));
-        rawModel.addPosition(new Vector3f(-0.5f, -0.5f, 0f));
-        rawModel.addPosition(new Vector3f(0.5f, -0.5f, 0f));
-        rawModel.addPosition(new Vector3f(0.5f, 0.5f, 0f));
-
-        // bottom left triangle
-        rawModel.addIndex(0);
-        rawModel.addIndex(1);
-        rawModel.addIndex(2);
-
-        // top right triangle
-        rawModel.addIndex(0);
-        rawModel.addIndex(2);
-        rawModel.addIndex(3);
-
-        float[] textureCoords = {
-                0,0,    //V0
-                0,1,    //V1
-                1,1,    //V2
-                1,0,    //V3
-        };
-
         TexturedModel texturedModel = TexturedModel.builder()
-                .model(modelLoader.loadRawModel(rawModel, textureCoords))
+                .model(modelLoader.loadRawModel(monkeyModel))
                 .texture(textureLoader.loadTexture("res/image.png"))
                 .build();
 

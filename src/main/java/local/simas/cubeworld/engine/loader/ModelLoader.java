@@ -27,10 +27,14 @@ public class ModelLoader {
     private final List<Integer> vaos = new ArrayList<>();
     private final List<Integer> vbos = new ArrayList<>();
 
-    public LoadedModel loadRawModel(RawModel rawModel, float[] textureCoords) {
+    public LoadedModel loadRawModel(RawModel rawModel) {
         int vaoId = createVao();
 
         float[] positions = LazyIterate.adapt(rawModel.getPositions())
+                .collectFloat(Float::floatValue)
+                .toArray();
+
+        float[] textureCoordinates = LazyIterate.adapt(rawModel.getTextureCoordinates())
                 .collectFloat(Float::floatValue)
                 .toArray();
 
@@ -40,7 +44,7 @@ public class ModelLoader {
                 .toArray();
 
         bindPositionBuffer(0, 3, positions);
-        bindPositionBuffer(1, 2, textureCoords);
+        bindPositionBuffer(1, 2, textureCoordinates);
         bindIndexBuffer(indices);
 
         glBindVertexArray(0);

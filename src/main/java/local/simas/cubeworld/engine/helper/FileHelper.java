@@ -28,4 +28,8 @@ public class FileHelper {
             return stringBuilder.toString();
         }
     }
+    public static InputStream getResourceAsStream(String filename) throws IOException {
+        ClassLoader classLoader = FileHelper.class.getClassLoader();
+        return classLoader.getResourceAsStream(filename);
+    }
 }
