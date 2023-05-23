@@ -53,6 +53,7 @@ public class Main {
 
         Entity entity = Entity.builder()
                 .position(new Vector3f(0, 0, -2))
+                .scale(new Vector3f(0.2f))
                 .model(texturedModel)
                 .build();
 
