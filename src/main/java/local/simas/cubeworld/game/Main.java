@@ -6,7 +6,6 @@ import local.simas.cubeworld.engine.entities.Entity;
 import local.simas.cubeworld.engine.loader.ModelLoader;
 import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
-import local.simas.cubeworld.engine.data.RawModel;
 import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.loader.RawModelLoader;
 import local.simas.cubeworld.engine.loader.TextureLoader;

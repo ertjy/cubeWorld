@@ -33,7 +33,9 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -83,6 +85,7 @@ public class DisplayManager {
         GL.createCapabilities();
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
         glViewport(0, 0, windowConfig.getWidth(), windowConfig.getHeight());
+        glEnable(GL_DEPTH_TEST);
 
         DisplayManager.windowConfig = windowConfig;
 

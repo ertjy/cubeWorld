@@ -7,7 +7,6 @@ import local.simas.cubeworld.engine.helper.MathHelper;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import lombok.Builder;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -34,7 +33,7 @@ public class Renderer {
 
     public void prepare() {
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-        glClear(GL11.GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     public void render(Entity entity) {

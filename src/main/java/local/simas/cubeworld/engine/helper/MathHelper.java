@@ -30,6 +30,7 @@ public class MathHelper {
 
         Matrix4f matrix = new Matrix4f();
         matrix.identity();
+
         matrix.m00(x_scale);
         matrix.m11(y_scale);
         matrix.m22(-((camera.getFarPlane() + camera.getNearPlane()) / frustum_length));
@@ -42,7 +43,6 @@ public class MathHelper {
 
     public static Matrix4f createViewMatrix(Camera camera) {
         Matrix4f matrix = new Matrix4f();
-
         matrix.identity();
 
         matrix.rotate(((float) Math.toRadians(camera.getRotation().x)), new Vector3f(1, 0, 0));

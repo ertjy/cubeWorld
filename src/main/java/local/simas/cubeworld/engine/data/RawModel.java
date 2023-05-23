@@ -15,11 +15,13 @@ public class RawModel {
     private List<Integer> indices = new ArrayList<>();
     private List<Float> textureCoordinates = new ArrayList<>();
 
-    public void addPosition(Vector3f position, Vector2f textureCoordinate) {
+    public void addPosition(Vector3f position) {
         positions.add(position.x());
         positions.add(position.y());
         positions.add(position.z());
+    }
 
+    public void addTextureCoordinate(Vector2f textureCoordinate) {
         textureCoordinates.add(textureCoordinate.x());
         textureCoordinates.add(textureCoordinate.y());
     }

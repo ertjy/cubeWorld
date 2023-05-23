@@ -15,39 +15,39 @@ import java.io.InputStream;
 
 public class RawModelLoader {
     public RawModel loadRawModelFromFile(String fileName) throws IOException {
-        Obj object = null;
+        Obj object;
 
         try (InputStream inputStream = FileHelper.getResourceAsStream(fileName)) {
             object = ObjUtils.convertToRenderable(ObjReader.read(inputStream));
         }
 
-        if (object.getNumVertices() != object.getNumTexCoords()) {
-            System.out.println("dicks");
-            throw new IllegalStateException("Vertex count and texture coordinate count do not match");
-        }
-
         RawModel model = new RawModel();
+        float[] textureCoordinates = new float[object.getNumVertices() * 2];
 
-        int vertexId = 0;
-        int textureCoordinateId = 0;
-
-        while (vertexId < object.getNumVertices() && textureCoordinateId < object.getNumTexCoords()) {
+        for (int vertexId = 0; vertexId < object.getNumVertices(); vertexId++) {
             FloatTuple positionTuple = object.getVertex(vertexId);
-            FloatTuple textureCoordinateTuple = object.getTexCoord(textureCoordinateId);
-            model.addPosition(
-                    new Vector3f(positionTuple.getX(), positionTuple.getY(), positionTuple.getZ()),
-                    new Vector2f(textureCoordinateTuple.getX(), textureCoordinateTuple.getY())
-            );
-            vertexId++;
-            textureCoordinateId++;
+            model.addPosition(new Vector3f(positionTuple.getX(), positionTuple.getY(), positionTuple.getZ()));
         }
 
         for (int faceId = 0; faceId < object.getNumFaces(); faceId++) {
             ObjFace face = object.getFace(faceId);
 
             for (int faceVertexId = 0; faceVertexId < face.getNumVertices(); faceVertexId++) {
-                model.addIndex(face.getVertexIndex(faceVertexId));
+                int vertexId = face.getVertexIndex(faceVertexId);
+                int textureCoordinateId = face.getTexCoordIndex(faceVertexId);
+
+                FloatTuple textureCoordinateTuple = object.getTexCoord(textureCoordinateId);
+                textureCoordinates[vertexId * 2] = textureCoordinateTuple.getX();
+                textureCoordinates[vertexId * 2 + 1] = textureCoordinateTuple.getY();
+
+                model.addIndex(vertexId);
             }
+        }
+
+        for (int vertexId = 0; vertexId < object.getNumVertices(); vertexId++) {
+            float x = textureCoordinates[vertexId * 2];
+            float y = 1.0f - textureCoordinates[vertexId * 2 + 1];
+            model.addTextureCoordinate(new Vector2f(x, y));
         }
 
         return model;
