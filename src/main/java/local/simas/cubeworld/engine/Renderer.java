@@ -51,8 +51,10 @@ public class Renderer {
 
         shaderProgram.loadTransformationMatrix(transformationMatrix);
         shaderProgram.loadViewMatrix(viewMatrix);
-        shaderProgram.loadLightPosition(light.getPosition());
-        shaderProgram.loadLightColor(light.getColor());
+        shaderProgram.loadLight(light);
+        shaderProgram.loadCamera(camera);
+        shaderProgram.loadReflectivity(texturedModel.getTexture().getReflectivity());
+        shaderProgram.loadShineDamper(texturedModel.getTexture().getShineDamper());
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());

@@ -1,5 +1,7 @@
 package local.simas.cubeworld.engine.shader;
 
+import local.simas.cubeworld.engine.entities.Camera;
+import local.simas.cubeworld.engine.entities.Light;
 import local.simas.cubeworld.engine.helper.FileHelper;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -35,8 +37,10 @@ public abstract class ShaderProgram {
     public abstract void loadTransformationMatrix(Matrix4f transformationMatrix);
     public abstract void loadProjectionMatrix(Matrix4f projectionMatrix);
     public abstract void loadViewMatrix(Matrix4f viewMatrix);
-    public abstract void loadLightPosition(Vector3f lightPosition);
-    public abstract void loadLightColor(Vector3f lightColor);
+    public abstract void loadLight(Light light);
+    public abstract void loadCamera(Camera camera);
+    public abstract void loadReflectivity(float reflectivity);
+    public abstract void loadShineDamper(float shineDamper);
 
     protected abstract void getAllUniformLocations();
 

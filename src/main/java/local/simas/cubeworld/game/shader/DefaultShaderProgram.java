@@ -1,8 +1,9 @@
 package local.simas.cubeworld.game.shader;
 
+import local.simas.cubeworld.engine.entities.Camera;
+import local.simas.cubeworld.engine.entities.Light;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import java.io.IOException;
 
@@ -13,8 +14,11 @@ public class DefaultShaderProgram extends ShaderProgram {
     private int transformationMatrixLocation;
     private int projectionMatrixLocation;
     private int viewMatrixLocation;
+    private int cameraPositionLocation;
     private int lightPositionLocation;
     private int lightColorLocation;
+    private int reflectivityLocation;
+    private int shineDamperLocation;
 
     public DefaultShaderProgram() throws IOException {
         super(VERTEX_SHADER_FILE, FRAGMENT_SHADER_FILE);
@@ -32,8 +36,11 @@ public class DefaultShaderProgram extends ShaderProgram {
         transformationMatrixLocation = super.getUniformFromLocation("transformationMatrix");
         projectionMatrixLocation = super.getUniformFromLocation("projectionMatrix");
         viewMatrixLocation = super.getUniformFromLocation("viewMatrix");
+        cameraPositionLocation = super.getUniformFromLocation("cameraPosition");
         lightPositionLocation = super.getUniformFromLocation("lightPosition");
         lightColorLocation = super.getUniformFromLocation("lightColor");
+        reflectivityLocation = super.getUniformFromLocation("reflectivity");
+        shineDamperLocation = super.getUniformFromLocation("shineDamper");
     }
 
     @Override
@@ -52,12 +59,23 @@ public class DefaultShaderProgram extends ShaderProgram {
     }
 
     @Override
-    public void loadLightPosition(Vector3f lightPosition) {
-        super.loadVector(lightPositionLocation, lightPosition);
+    public void loadLight(Light light) {
+        super.loadVector(lightPositionLocation, light.getPosition());
+        super.loadVector(lightColorLocation, light.getColor());
     }
 
     @Override
-    public void loadLightColor(Vector3f lightColor) {
-        super.loadVector(lightColorLocation, lightColor);
+    public void loadCamera(Camera camera) {
+        super.loadVector(cameraPositionLocation, camera.getPosition());
+    }
+
+    @Override
+    public void loadReflectivity(float reflectivity) {
+        super.loadFloat(reflectivityLocation, reflectivity);
+    }
+
+    @Override
+    public void loadShineDamper(float shineDamper) {
+        super.loadFloat(shineDamperLocation, shineDamper);
     }
 }

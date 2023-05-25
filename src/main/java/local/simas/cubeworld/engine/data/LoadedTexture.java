@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoadedTexture {
     private int textureId;
+    private float reflectivity;
+    private float shineDamper;
 }

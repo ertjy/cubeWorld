@@ -39,7 +39,7 @@ public class Main {
 
             texturedModel = TexturedModel.builder()
                     .model(modelLoader.loadRawModel(rawModelLoader.loadRawModelFromFile("models/monkey.obj")))
-                    .texture(textureLoader.loadTextureFromFile("textures/monkey.jpg"))
+                    .texture(textureLoader.loadTextureFromFile("textures/monkey.jpg", 1, 5))
                     .build();
         } catch (IOException ex) {
             System.exit(1);

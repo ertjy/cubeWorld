@@ -1,5 +1,6 @@
 package local.simas.cubeworld.engine.loader;
 
+import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.data.LoadedTexture;
 import local.simas.cubeworld.engine.helper.FileHelper;
 
@@ -28,7 +29,7 @@ import static org.lwjgl.opengl.GL11.glTexParameteri;
 public class TextureLoader {
     private final List<Integer> textures = new ArrayList<>();
 
-    public LoadedTexture loadTextureFromFile(String fileName) throws IOException {
+    public LoadedTexture loadTextureFromFile(String fileName, float reflectivity, float shineDamper) throws IOException {
         BufferedImage image = ImageIO.read(FileHelper.getResourceAsStream(fileName));
 
         int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
@@ -56,6 +57,8 @@ public class TextureLoader {
 
         return LoadedTexture.builder()
                 .textureId(textureId)
+                .shineDamper(shineDamper)
+                .reflectivity(reflectivity)
                 .build();
     }
 
