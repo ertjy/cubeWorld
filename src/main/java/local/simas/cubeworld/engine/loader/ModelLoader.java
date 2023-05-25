@@ -38,6 +38,10 @@ public class ModelLoader {
                 .collectFloat(Float::floatValue)
                 .toArray();
 
+        float[] normals = LazyIterate.adapt(rawModel.getNormals())
+                .collectFloat(Float::floatValue)
+                .toArray();
+
         int[] indices = rawModel.getIndices()
                 .stream()
                 .mapToInt(Integer::intValue)
@@ -45,6 +49,7 @@ public class ModelLoader {
 
         bindPositionBuffer(0, 3, positions);
         bindPositionBuffer(1, 2, textureCoordinates);
+        bindPositionBuffer(2, 3, normals);
         bindIndexBuffer(indices);
 
         glBindVertexArray(0);

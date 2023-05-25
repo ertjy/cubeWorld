@@ -14,6 +14,7 @@ public class RawModel {
     private List<Float> positions = new ArrayList<>();
     private List<Integer> indices = new ArrayList<>();
     private List<Float> textureCoordinates = new ArrayList<>();
+    private List<Float> normals = new ArrayList<>();
 
     public void addPosition(Vector3f position) {
         positions.add(position.x());
@@ -24,6 +25,12 @@ public class RawModel {
     public void addTextureCoordinate(Vector2f textureCoordinate) {
         textureCoordinates.add(textureCoordinate.x());
         textureCoordinates.add(textureCoordinate.y());
+    }
+
+    public void addNormal(Vector3f normal) {
+        normals.add(normal.x());
+        normals.add(normal.y());
+        normals.add(normal.z());
     }
 
     public void addIndex(Integer index) {

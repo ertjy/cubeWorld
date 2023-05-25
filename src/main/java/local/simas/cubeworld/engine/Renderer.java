@@ -3,6 +3,7 @@ package local.simas.cubeworld.engine;
 import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.entities.Camera;
 import local.simas.cubeworld.engine.entities.Entity;
+import local.simas.cubeworld.engine.entities.Light;
 import local.simas.cubeworld.engine.helper.MathHelper;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Entity entity) {
+    public void render(Entity entity, Light light) {
         TexturedModel texturedModel = entity.getModel();
         Matrix4f transformationMatrix = entity.getTransformationMatrix();
         Matrix4f viewMatrix = camera.getViewMatrix();
@@ -46,9 +47,12 @@ public class Renderer {
         glBindVertexArray(texturedModel.getModel().getVaoId());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
         shaderProgram.loadTransformationMatrix(transformationMatrix);
         shaderProgram.loadViewMatrix(viewMatrix);
+        shaderProgram.loadLightPosition(light.getPosition());
+        shaderProgram.loadLightColor(light.getColor());
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());
@@ -57,6 +61,7 @@ public class Renderer {
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindVertexArray(0);
 
         shaderProgram.stop();

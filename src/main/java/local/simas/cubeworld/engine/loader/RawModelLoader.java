@@ -23,6 +23,7 @@ public class RawModelLoader {
 
         RawModel model = new RawModel();
         float[] textureCoordinates = new float[object.getNumVertices() * 2];
+        float[] normals = new float[object.getNumVertices() * 3];
 
         for (int vertexId = 0; vertexId < object.getNumVertices(); vertexId++) {
             FloatTuple positionTuple = object.getVertex(vertexId);
@@ -35,19 +36,31 @@ public class RawModelLoader {
             for (int faceVertexId = 0; faceVertexId < face.getNumVertices(); faceVertexId++) {
                 int vertexId = face.getVertexIndex(faceVertexId);
                 int textureCoordinateId = face.getTexCoordIndex(faceVertexId);
+                int normalId = face.getNormalIndex(faceVertexId);
 
                 FloatTuple textureCoordinateTuple = object.getTexCoord(textureCoordinateId);
                 textureCoordinates[vertexId * 2] = textureCoordinateTuple.getX();
                 textureCoordinates[vertexId * 2 + 1] = textureCoordinateTuple.getY();
+
+                FloatTuple normalTuple = object.getNormal(normalId);
+                normals[vertexId * 3] = normalTuple.getX();
+                normals[vertexId * 3 + 1] = normalTuple.getY();
+                normals[vertexId * 3 + 2] = normalTuple.getZ();
 
                 model.addIndex(vertexId);
             }
         }
 
         for (int vertexId = 0; vertexId < object.getNumVertices(); vertexId++) {
-            float x = textureCoordinates[vertexId * 2];
-            float y = 1.0f - textureCoordinates[vertexId * 2 + 1];
-            model.addTextureCoordinate(new Vector2f(x, y));
+            float textureCoordinateX = textureCoordinates[vertexId * 2];
+            float textureCoordinateY = 1.0f - textureCoordinates[vertexId * 2 + 1];
+
+            float normalX = normals[vertexId * 3];
+            float normalY = normals[vertexId * 3 + 1];
+            float normalZ = normals[vertexId * 3 + 2];
+
+            model.addTextureCoordinate(new Vector2f(textureCoordinateX, textureCoordinateY));
+            model.addNormal(new Vector3f(normalX, normalY, normalZ));
         }
 
         return model;
