@@ -9,6 +9,8 @@ import local.simas.cubeworld.engine.shader.ShaderProgram;
 import lombok.Builder;
 import org.joml.Matrix4f;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -29,7 +31,7 @@ public class Renderer {
         this.shaderProgram = shaderProgram;
         this.camera = camera;
 
-        this.loadProjectionMatrix();
+        this.loadCamera();
     }
 
     public void prepare() {
@@ -37,7 +39,7 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Entity entity, Light light) {
+    public void render(Entity entity, List<Light> lights) {
         TexturedModel texturedModel = entity.getModel();
         Matrix4f transformationMatrix = entity.getTransformationMatrix();
         Matrix4f viewMatrix = camera.getViewMatrix();
@@ -51,8 +53,7 @@ public class Renderer {
 
         shaderProgram.loadTransformationMatrix(transformationMatrix);
         shaderProgram.loadViewMatrix(viewMatrix);
-        shaderProgram.loadLight(light);
-        shaderProgram.loadCamera(camera);
+        shaderProgram.loadLights(lights);
         shaderProgram.loadReflectivity(texturedModel.getTexture().getReflectivity());
         shaderProgram.loadShineDamper(texturedModel.getTexture().getShineDamper());
 
@@ -75,23 +76,24 @@ public class Renderer {
         }
 
         this.shaderProgram = shaderProgram;
-        this.loadProjectionMatrix();
+        this.loadCamera();
     }
 
     public void setCamera(Camera camera) {
         this.camera = camera;
-        this.loadProjectionMatrix();
+        this.loadCamera();
     }
 
     public void cleanUp() {
         shaderProgram.cleanUp();
     }
 
-    private void loadProjectionMatrix() {
+    private void loadCamera() {
         Matrix4f projectionMatrix = MathHelper.createProjectionMatrix(DisplayManager.getWindowConfig(), camera);
 
         shaderProgram.start();
         shaderProgram.loadProjectionMatrix(projectionMatrix);
+        shaderProgram.loadCamera(camera);
         shaderProgram.stop();
     }
 }

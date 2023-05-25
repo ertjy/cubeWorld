@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL20;
 
 import java.io.*;
 import java.nio.FloatBuffer;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
@@ -37,18 +38,16 @@ public abstract class ShaderProgram {
     public abstract void loadTransformationMatrix(Matrix4f transformationMatrix);
     public abstract void loadProjectionMatrix(Matrix4f projectionMatrix);
     public abstract void loadViewMatrix(Matrix4f viewMatrix);
-    public abstract void loadLight(Light light);
     public abstract void loadCamera(Camera camera);
+    public abstract void loadLights(List<Light> lights);
     public abstract void loadReflectivity(float reflectivity);
     public abstract void loadShineDamper(float shineDamper);
 
     protected abstract void getAllUniformLocations();
 
-    protected int getUniformFromLocation(String uniformName) {
+    protected int getUniformLocation(String uniformName) {
         return glGetUniformLocation(programId, uniformName);
     }
-
-
 
     public void start(){
         glUseProgram(programId);
@@ -75,6 +74,10 @@ public abstract class ShaderProgram {
         glBindAttribLocation(programId, attribute, name);
     }
 
+    protected void loadInt(int location, int value) {
+        glUniform1i(location, value);
+    }
+
     protected void loadFloat(int location, float value) {
         glUniform1f(location, value);
     }
@@ -83,18 +86,38 @@ public abstract class ShaderProgram {
         glUniform3f(location, vector.x, vector.y, vector.z);
     }
 
-    protected void loadBoolean(int location, boolean value) {
-        float toLoad = 0;
-        if(value) {
-            toLoad = 1;
+    protected void loadVectors(int location, List<Vector3f> vectors) {
+        FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(3 * vectors.size());
+
+        for (Vector3f vector : vectors) {
+            vectorToBuffer(vector, vectorBuffer);
         }
-        glUniform1f(location, toLoad);
+
+        vectorBuffer.flip();
+
+        glUniform3fv(location, vectorBuffer);
+    }
+
+    protected void loadBoolean(int location, boolean value) {
+        int valueToLoad = 0;
+
+        if (value) {
+            valueToLoad = 1;
+        }
+
+        glUniform1i(location, valueToLoad);
     }
 
     protected void loadMatrix(int location, Matrix4f matrix) {
         matrixToBuffer(matrix, matrixBuffer);
         matrixBuffer.flip();
         glUniformMatrix4fv(location, false, matrixBuffer);
+    }
+
+    private static void vectorToBuffer(Vector3f v, FloatBuffer dest) {
+        dest.put(v.x());
+        dest.put(v.y());
+        dest.put(v.z());
     }
 
     private static void matrixToBuffer(Matrix4f m, FloatBuffer dest)

@@ -14,6 +14,8 @@ import local.simas.cubeworld.game.shader.DefaultShaderProgram;
 import org.joml.Vector3f;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameLoop {
     private RawModelLoader rawModelLoader;
@@ -21,8 +23,8 @@ public class GameLoop {
     private TextureLoader textureLoader;
     private Renderer renderer;
     private Camera camera;
-    private Entity entity;
-    private Light light;
+    private List<Entity> entities;
+    private List<Light> lights;
 
     public GameLoop(WindowConfig windowConfig) {
         DisplayManager.createWindow(windowConfig);
@@ -38,8 +40,8 @@ public class GameLoop {
             shaderProgram = new DefaultShaderProgram();
 
             texturedModel = TexturedModel.builder()
-                    .model(modelLoader.loadRawModel(rawModelLoader.loadRawModelFromFile("models/monkey.obj")))
-                    .texture(textureLoader.loadTextureFromFile("textures/monkey.jpg", 1, 5))
+                    .model(modelLoader.loadRawModel(rawModelLoader.loadRawModelFromFile("models/dragon.obj")))
+                    .texture(textureLoader.loadTextureFromFile("textures/white.jpg", 1, 5))
                     .build();
         } catch (IOException ex) {
             System.exit(1);
@@ -52,26 +54,42 @@ public class GameLoop {
                 .camera(camera)
                 .build();
 
-        entity = Entity.builder()
-                .position(new Vector3f(0f, 0f, -2f))
-                .scale(new Vector3f(0.2f))
-                .model(texturedModel)
-                .build();
+        entities = new ArrayList<>();
+        lights = new ArrayList<>();
 
-        light = Light.builder()
-                .position(new Vector3f(0f, 0f, 5f))
-                .color(new Vector3f(1f, 1f, 1f))
-                .build();
+        entities.add(
+                Entity.builder()
+                        .position(new Vector3f(0f, 0f, 0f))
+                        .scale(new Vector3f(0.1f))
+                        .model(texturedModel)
+                        .build()
+        );
+
+        lights.add(
+                Light.builder()
+                        .position(new Vector3f(5f, 0f, 0f))
+                        .color(new Vector3f(1f, 0f, 0f))
+                        .build()
+        );
+
+        lights.add(
+                Light.builder()
+                        .position(new Vector3f(-5f, 0f, 0f))
+                        .color(new Vector3f(0f, 0f, 1f))
+                        .build()
+        );
     }
 
     public void loop() {
         while (!DisplayManager.windowShouldClose()) {
             camera.move();
-            entity.getPosition().add(new Vector3f(0f, 0f, 0.1f * DisplayManager.getCurrentFrameTime()));
-            entity.getRotation().add(new Vector3f(10f, 20f, 30f).mul(DisplayManager.getCurrentFrameTime()));
+            entities.get(0).getRotation().add(new Vector3f(10f, 20f, 30f).mul(DisplayManager.getCurrentFrameTime()));
 
             renderer.prepare();
-            renderer.render(entity, light);
+
+            for (Entity entity : entities) {
+                renderer.render(entity, lights);
+            }
 
             DisplayManager.updateWindow();
         }

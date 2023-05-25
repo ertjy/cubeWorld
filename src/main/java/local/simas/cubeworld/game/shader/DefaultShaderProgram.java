@@ -4,19 +4,23 @@ import local.simas.cubeworld.engine.entities.Camera;
 import local.simas.cubeworld.engine.entities.Light;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DefaultShaderProgram extends ShaderProgram {
     private static final String VERTEX_SHADER_FILE = "shaders/vertexShader.glsl";
     private static final String FRAGMENT_SHADER_FILE = "shaders/fragmentShader.glsl";
+    private static final int LIGHT_COUNT = 16;
 
     private int transformationMatrixLocation;
     private int projectionMatrixLocation;
     private int viewMatrixLocation;
     private int cameraPositionLocation;
-    private int lightPositionLocation;
-    private int lightColorLocation;
+    private int lightCountLocation;
+    private int lightsLocation;
     private int reflectivityLocation;
     private int shineDamperLocation;
 
@@ -33,14 +37,14 @@ public class DefaultShaderProgram extends ShaderProgram {
 
     @Override
     protected void getAllUniformLocations() {
-        transformationMatrixLocation = super.getUniformFromLocation("transformationMatrix");
-        projectionMatrixLocation = super.getUniformFromLocation("projectionMatrix");
-        viewMatrixLocation = super.getUniformFromLocation("viewMatrix");
-        cameraPositionLocation = super.getUniformFromLocation("cameraPosition");
-        lightPositionLocation = super.getUniformFromLocation("lightPosition");
-        lightColorLocation = super.getUniformFromLocation("lightColor");
-        reflectivityLocation = super.getUniformFromLocation("reflectivity");
-        shineDamperLocation = super.getUniformFromLocation("shineDamper");
+        transformationMatrixLocation = super.getUniformLocation("transformationMatrix");
+        projectionMatrixLocation = super.getUniformLocation("projectionMatrix");
+        viewMatrixLocation = super.getUniformLocation("viewMatrix");
+        cameraPositionLocation = super.getUniformLocation("cameraPosition");
+        lightCountLocation = super.getUniformLocation("lightCount");
+        lightsLocation = super.getUniformLocation("lights");
+        reflectivityLocation = super.getUniformLocation("reflectivity");
+        shineDamperLocation = super.getUniformLocation("shineDamper");
     }
 
     @Override
@@ -59,14 +63,27 @@ public class DefaultShaderProgram extends ShaderProgram {
     }
 
     @Override
-    public void loadLight(Light light) {
-        super.loadVector(lightPositionLocation, light.getPosition());
-        super.loadVector(lightColorLocation, light.getColor());
+    public void loadCamera(Camera camera) {
+        super.loadVector(cameraPositionLocation, camera.getPosition());
     }
 
     @Override
-    public void loadCamera(Camera camera) {
-        super.loadVector(cameraPositionLocation, camera.getPosition());
+    public void loadLights(List<Light> lights) {
+        int lightCount = Math.min(LIGHT_COUNT, lights.size());
+        List<Vector3f> vectors = new ArrayList<>();
+
+        for (int i = 0; i < LIGHT_COUNT; i++) {
+            if (lights.size() <= i) {
+                vectors.add(new Vector3f());
+                vectors.add(new Vector3f());
+            } else {
+                vectors.add(lights.get(i).getPosition());
+                vectors.add(lights.get(i).getColor());
+            }
+        }
+
+        super.loadInt(lightCountLocation, lightCount);
+        super.loadVectors(lightsLocation, vectors);
     }
 
     @Override
