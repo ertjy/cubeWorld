@@ -27,14 +27,16 @@ void main() {
         float diffuseDotProduct = dot(unitNormal, unitToLightVector);
         float diffuseBrightness = max(diffuseDotProduct, 0);
         vec3 diffuseColor = diffuseBrightness * lightColor;
+        totalColor += diffuseColor;
 
-        vec3 reflectedLightVector = reflect(-unitToLightVector, unitNormal);
-        float specularDotProduct = dot(reflectedLightVector, unitToCameraVector);
-        float specularBrightness = max(specularDotProduct, 0);
-        float specularDampedBrightness = pow(specularBrightness, shineDamper);
-        vec3 specularColor = specularDampedBrightness * reflectivity * lightColor;
-
-        totalColor += diffuseColor + specularColor;
+        if (diffuseBrightness != 0) {
+            vec3 reflectedLightVector = reflect(-unitToLightVector, unitNormal);
+            float specularDotProduct = dot(reflectedLightVector, unitToCameraVector);
+            float specularBrightness = max(specularDotProduct, 0);
+            float specularDampedBrightness = pow(specularBrightness, shineDamper);
+            vec3 specularColor = specularDampedBrightness * reflectivity * lightColor;
+            totalColor += specularColor;
+        }
     }
 
     outColor = vec4(totalColor, 1) * texture2D(textureSampler, passTextureCoordinates);
