@@ -47,7 +47,10 @@ public class GameLoop {
             System.exit(1);
         }
 
-        camera = Camera.builder().build();
+        camera = Camera.builder()
+                .position(new Vector3f(0f, 0f, 0f))
+                .rotation(new Vector3f(0f, 0f, 0f))
+                .build();
 
         renderer = Renderer.builder()
                 .shaderProgram(shaderProgram)
@@ -83,7 +86,6 @@ public class GameLoop {
     public void loop() {
         while (!DisplayManager.windowShouldClose()) {
             camera.move();
-            entities.get(0).getRotation().add(new Vector3f(10f, 20f, 30f).mul(DisplayManager.getCurrentFrameTime()));
 
             renderer.prepare();
 

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
@@ -20,6 +21,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Camera {
+    private static final float LOOK_SPEED = 0.25f;
+
     @Builder.Default
     private Vector3f position = new Vector3f(0f, 0f, 0f);
 
@@ -35,7 +38,14 @@ public class Camera {
     @Builder.Default
     private float farPlane = 1000f;
 
+    private Vector2f lastCursorPosition;
+
     public void move() {
+        if (lastCursorPosition == null) {
+            lastCursorPosition = DisplayManager.getCursorPosition();
+            return;
+        }
+
         Vector3f velocity = new Vector3f(0, 0, 0);
 
         if(DisplayManager.getKey(GLFW_KEY_W) == GLFW_PRESS) {
@@ -54,8 +64,22 @@ public class Camera {
             velocity.add(1f, 0f, 0f);
         }
 
+        velocity.rotateAxis((float) Math.toRadians(-rotation.x()), 1, 0, 0, velocity);
+        velocity.rotateAxis((float) Math.toRadians(-rotation.y()), 0, 1, 0, velocity);
+        velocity.rotateAxis((float) Math.toRadians(-rotation.z()), 0, 0, 1, velocity);
+
         velocity.mul(DisplayManager.getCurrentFrameTime());
         position.add(velocity);
+
+        Vector2f currentCursorPosition = DisplayManager.getCursorPosition();
+        Vector2f deltaCursorPosition = new Vector2f(currentCursorPosition).sub(lastCursorPosition);
+
+        Vector2f newCursorPosition = new Vector2f(DisplayManager.getWindowConfig().getWidth(), DisplayManager.getWindowConfig().getHeight()).div(2);
+        DisplayManager.setCursorPosition(newCursorPosition);
+
+        lastCursorPosition = new Vector2f(newCursorPosition);
+
+        rotation.add(new Vector3f(deltaCursorPosition.y() * LOOK_SPEED, deltaCursorPosition.x() * LOOK_SPEED, 0f));
     }
 
     public Matrix4f getViewMatrix() {

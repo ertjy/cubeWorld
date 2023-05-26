@@ -1,11 +1,14 @@
 package local.simas.cubeworld.engine;
 
 import local.simas.cubeworld.engine.config.WindowConfig;
+import org.joml.Vector2f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.time.Instant;
 import java.util.Objects;
@@ -18,6 +21,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 import static org.lwjgl.glfw.GLFW.glfwGetKey;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
@@ -25,6 +29,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPos;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
@@ -135,6 +140,20 @@ public class DisplayManager {
 
     public static int getKey(int key) {
         return glfwGetKey(windowHandle, key);
+    }
+
+    public static Vector2f getCursorPosition() {
+        DoubleBuffer xBuffer = BufferUtils.createDoubleBuffer(1);
+        DoubleBuffer yBuffer = BufferUtils.createDoubleBuffer(1);
+        glfwGetCursorPos(windowHandle, xBuffer, yBuffer);
+        float x = (float) xBuffer.get(0);
+        float y = (float) yBuffer.get(0);
+
+        return new Vector2f(x, y);
+    }
+
+    public static void setCursorPosition(Vector2f cursorPosition) {
+        glfwSetCursorPos(windowHandle, cursorPosition.x(), cursorPosition.y());
     }
 
     public static WindowConfig getWindowConfig() {
