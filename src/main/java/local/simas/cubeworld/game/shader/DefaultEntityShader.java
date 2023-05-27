@@ -4,7 +4,7 @@ import local.simas.cubeworld.engine.entity.Camera;
 import local.simas.cubeworld.engine.entity.light.DirectionalLight;
 import local.simas.cubeworld.engine.entity.light.Light;
 import local.simas.cubeworld.engine.entity.light.SpotLight;
-import local.simas.cubeworld.engine.shader.ShaderProgram;
+import local.simas.cubeworld.engine.shader.EntityShader;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultShaderProgram extends ShaderProgram {
+public class DefaultEntityShader extends EntityShader {
     private static final String VERTEX_SHADER_FILE = "shaders/vertexShader.glsl";
     private static final String FRAGMENT_SHADER_FILE = "shaders/fragmentShader.glsl";
     private static final int LIGHT_COUNT = 16;
@@ -26,7 +26,7 @@ public class DefaultShaderProgram extends ShaderProgram {
     private int reflectivityLocation;
     private int shineDamperLocation;
 
-    public DefaultShaderProgram() throws IOException {
+    public DefaultEntityShader() throws IOException {
         super(VERTEX_SHADER_FILE, FRAGMENT_SHADER_FILE);
     }
 

@@ -36,7 +36,7 @@ public class Camera {
     private float nearPlane = 0.1f;
 
     @Builder.Default
-    private float farPlane = 1000f;
+    private float farPlane = 5000f;
 
     private Vector2f lastCursorPosition;
 
@@ -84,5 +84,9 @@ public class Camera {
 
     public Matrix4f getViewMatrix() {
         return MathHelper.createViewMatrix(this);
+    }
+
+    public Matrix4f getViewMatrixForSkybox() {
+        return MathHelper.createViewMatrixForSkybox(this);
     }
 }

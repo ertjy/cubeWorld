@@ -35,17 +35,23 @@ public class RawModelLoader {
 
             for (int faceVertexId = 0; faceVertexId < face.getNumVertices(); faceVertexId++) {
                 int vertexId = face.getVertexIndex(faceVertexId);
-                int textureCoordinateId = face.getTexCoordIndex(faceVertexId);
-                int normalId = face.getNormalIndex(faceVertexId);
 
-                FloatTuple textureCoordinateTuple = object.getTexCoord(textureCoordinateId);
-                textureCoordinates[vertexId * 2] = textureCoordinateTuple.getX();
-                textureCoordinates[vertexId * 2 + 1] = textureCoordinateTuple.getY();
+                if (face.containsTexCoordIndices()) {
+                    int textureCoordinateId = face.getTexCoordIndex(faceVertexId);
 
-                FloatTuple normalTuple = object.getNormal(normalId);
-                normals[vertexId * 3] = normalTuple.getX();
-                normals[vertexId * 3 + 1] = normalTuple.getY();
-                normals[vertexId * 3 + 2] = normalTuple.getZ();
+                    FloatTuple textureCoordinateTuple = object.getTexCoord(textureCoordinateId);
+                    textureCoordinates[vertexId * 2] = textureCoordinateTuple.getX();
+                    textureCoordinates[vertexId * 2 + 1] = textureCoordinateTuple.getY();
+                }
+
+                if (face.containsNormalIndices()) {
+                    int normalId = face.getNormalIndex(faceVertexId);
+
+                    FloatTuple normalTuple = object.getNormal(normalId);
+                    normals[vertexId * 3] = normalTuple.getX();
+                    normals[vertexId * 3 + 1] = normalTuple.getY();
+                    normals[vertexId * 3 + 2] = normalTuple.getZ();
+                }
 
                 model.addIndex(vertexId);
             }

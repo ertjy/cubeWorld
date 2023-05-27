@@ -15,14 +15,14 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
-public abstract class ShaderProgram {
+public abstract class Shader {
     private int programId;
     private int vertexShaderId;
     private int fragmentShaderId;
 
     private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 
-    public ShaderProgram(String vertexFile, String fragmentFile) throws IOException {
+    public Shader(String vertexFile, String fragmentFile) throws IOException {
         vertexShaderId = loadShader(vertexFile, GL_VERTEX_SHADER);
         fragmentShaderId = loadShader(fragmentFile, GL_FRAGMENT_SHADER);
 
@@ -34,14 +34,6 @@ public abstract class ShaderProgram {
         glValidateProgram(programId);
         getAllUniformLocations();
     }
-
-    public abstract void loadTransformationMatrix(Matrix4f transformationMatrix);
-    public abstract void loadProjectionMatrix(Matrix4f projectionMatrix);
-    public abstract void loadViewMatrix(Matrix4f viewMatrix);
-    public abstract void loadCamera(Camera camera);
-    public abstract void loadLights(List<Light> lights);
-    public abstract void loadReflectivity(float reflectivity);
-    public abstract void loadShineDamper(float shineDamper);
 
     protected abstract void getAllUniformLocations();
 

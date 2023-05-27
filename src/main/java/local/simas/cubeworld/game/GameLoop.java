@@ -5,11 +5,13 @@ import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
 import local.simas.cubeworld.engine.entity.Camera;
 import local.simas.cubeworld.engine.entity.Entity;
+import local.simas.cubeworld.engine.entity.Skybox;
 import local.simas.cubeworld.engine.entity.light.DirectionalLight;
 import local.simas.cubeworld.engine.entity.light.Light;
 import local.simas.cubeworld.engine.helper.TexturedModelHelper;
 import local.simas.cubeworld.game.entity.Block;
-import local.simas.cubeworld.game.shader.DefaultShaderProgram;
+import local.simas.cubeworld.game.shader.DefaultEntityShader;
+import local.simas.cubeworld.game.shader.DefaultSkyboxShader;
 import org.joml.Vector3f;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.util.List;
 public class GameLoop {
     private Renderer renderer;
     private Camera camera;
+    private Skybox skybox;
     private List<Entity> entities;
     private List<Light> lights;
 
@@ -26,10 +29,12 @@ public class GameLoop {
         DisplayManager.createWindow(windowConfig);
         DisplayManager.showWindow();
 
-        DefaultShaderProgram shaderProgram = null;
+        DefaultEntityShader entityShader = null;
+        DefaultSkyboxShader skyboxShader = null;
 
         try {
-            shaderProgram = new DefaultShaderProgram();
+            entityShader = new DefaultEntityShader();
+            skyboxShader = new DefaultSkyboxShader();
             TexturedModelType.loadAll();
         } catch (IOException ex) {
             System.exit(1);
@@ -41,8 +46,13 @@ public class GameLoop {
                 .build();
 
         renderer = Renderer.builder()
-                .shaderProgram(shaderProgram)
+                .entityShader(entityShader)
+                .skyboxShader(skyboxShader)
                 .camera(camera)
+                .build();
+
+        skybox = Skybox.builder()
+                .model(TexturedModelHelper.getTexturedModelForType(TexturedModelType.SKYBOX.getType()))
                 .build();
 
         entities = new ArrayList<>();
@@ -89,8 +99,10 @@ public class GameLoop {
 
             renderer.prepare();
 
+            renderer.renderSkybox(skybox);
+
             for (Entity entity : entities) {
-                renderer.render(entity, lights);
+                renderer.renderEntity(entity, lights);
             }
 
             DisplayManager.updateWindow();

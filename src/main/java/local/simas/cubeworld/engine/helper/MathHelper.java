@@ -53,4 +53,15 @@ public class MathHelper {
 
         return matrix;
     }
+
+    public static Matrix4f createViewMatrixForSkybox(Camera camera) {
+        Matrix4f matrix = new Matrix4f();
+        matrix.identity();
+
+        matrix.rotate(((float) Math.toRadians(camera.getRotation().x)), new Vector3f(1, 0, 0));
+        matrix.rotate(((float) Math.toRadians(camera.getRotation().y)), new Vector3f(0, 1, 0));
+        matrix.rotate(((float) Math.toRadians(camera.getRotation().z)), new Vector3f(0, 0, 1));
+
+        return matrix;
+    }
 }
