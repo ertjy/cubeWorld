@@ -39,4 +39,4 @@ bin/
 .DS_Store
 
 ### Blender ###
-.blend1
+*.blend1
