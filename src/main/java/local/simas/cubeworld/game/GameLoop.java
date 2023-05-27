@@ -10,18 +10,25 @@ import local.simas.cubeworld.engine.entity.light.DirectionalLight;
 import local.simas.cubeworld.engine.entity.light.Light;
 import local.simas.cubeworld.engine.helper.TexturedModelHelper;
 import local.simas.cubeworld.game.entity.Block;
+import local.simas.cubeworld.game.entity.BlockType;
 import local.simas.cubeworld.game.shader.DefaultEntityShader;
 import local.simas.cubeworld.game.shader.DefaultSkyboxShader;
+import local.simas.cubeworld.game.world.Chunk;
+import local.simas.cubeworld.game.world.World;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameLoop {
     private Renderer renderer;
+    private WorldRenderer worldRenderer;
     private Camera camera;
     private Skybox skybox;
+    private World world;
     private List<Entity> entities;
     private List<Light> lights;
 
@@ -51,39 +58,23 @@ public class GameLoop {
                 .camera(camera)
                 .build();
 
+        worldRenderer = WorldRenderer.builder()
+                .renderer(renderer)
+                .build();
+
         skybox = Skybox.builder()
                 .model(TexturedModelHelper.getTexturedModelForType(TexturedModelType.SKYBOX.getType()))
                 .build();
 
+        world = World.builder()
+                .chunks(Map.of(
+                        new Vector3i(0, 0, 0),
+                        Chunk.generate(new Vector3i(0, 0, 0))
+                ))
+                .build();
+
         entities = new ArrayList<>();
         lights = new ArrayList<>();
-
-        for (int x = 0; x <= 10; x++) {
-            entities.add(
-                    Block.builder()
-                            .texturedModelType(TexturedModelType.WHITE_BLOCK)
-                            .position(new Vector3f(x, 0f, 0f))
-                            .build()
-            );
-        }
-
-        for (int y = 0; y <= 10; y += 2) {
-            entities.add(
-                    Block.builder()
-                            .texturedModelType(TexturedModelType.GRASS_BLOCK)
-                            .position(new Vector3f(0f, y, 0f))
-                            .build()
-            );
-        }
-
-        for (int z = 0; z <= 10; z += 5) {
-            entities.add(
-                    Block.builder()
-                            .texturedModelType(TexturedModelType.GRASS_BLOCK)
-                            .position(new Vector3f(0f, 0f, z))
-                            .build()
-            );
-        }
 
         lights.add(
                 DirectionalLight.builder()
@@ -104,6 +95,8 @@ public class GameLoop {
             for (Entity entity : entities) {
                 renderer.renderEntity(entity, lights);
             }
+
+            worldRenderer.renderWorld(world, lights);
 
             DisplayManager.updateWindow();
         }
