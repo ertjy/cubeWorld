@@ -5,7 +5,8 @@ import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
 import local.simas.cubeworld.engine.entity.Camera;
 import local.simas.cubeworld.engine.entity.Entity;
-import local.simas.cubeworld.engine.entity.Light;
+import local.simas.cubeworld.engine.entity.light.DirectionalLight;
+import local.simas.cubeworld.engine.entity.light.Light;
 import local.simas.cubeworld.engine.helper.TexturedModelHelper;
 import local.simas.cubeworld.game.entity.Block;
 import local.simas.cubeworld.game.shader.DefaultShaderProgram;
@@ -75,23 +76,9 @@ public class GameLoop {
         }
 
         lights.add(
-                Light.builder()
-                        .position(new Vector3f(5f, 0f, 0f))
-                        .color(new Vector3f(1f, 0f, 0f))
-                        .build()
-        );
-
-        lights.add(
-                Light.builder()
-                        .position(new Vector3f(0f, 5f, 0f))
-                        .color(new Vector3f(0f, 1f, 0f))
-                        .build()
-        );
-
-        lights.add(
-                Light.builder()
-                        .position(new Vector3f(0f, 0f, 5f))
-                        .color(new Vector3f(0f, 0f, 1f))
+                DirectionalLight.builder()
+                        .direction(new Vector3f(-1f, -1f, -1f))
+                        .color(new Vector3f(1f, 1f, 1f))
                         .build()
         );
     }

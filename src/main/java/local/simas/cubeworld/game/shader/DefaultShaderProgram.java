@@ -1,7 +1,9 @@
 package local.simas.cubeworld.game.shader;
 
 import local.simas.cubeworld.engine.entity.Camera;
-import local.simas.cubeworld.engine.entity.Light;
+import local.simas.cubeworld.engine.entity.light.DirectionalLight;
+import local.simas.cubeworld.engine.entity.light.Light;
+import local.simas.cubeworld.engine.entity.light.SpotLight;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -76,9 +78,24 @@ public class DefaultShaderProgram extends ShaderProgram {
             if (lights.size() <= i) {
                 vectors.add(new Vector3f());
                 vectors.add(new Vector3f());
+                vectors.add(new Vector3f());
             } else {
-                vectors.add(lights.get(i).getPosition());
-                vectors.add(lights.get(i).getColor());
+                Light light = lights.get(i);
+
+                switch (light.getType()) {
+                    case SPOT_LIGHT -> {
+                        SpotLight spotLight = (SpotLight) light;
+                        vectors.add(spotLight.getPosition());
+                    }
+                    case DIRECTIONAL_LIGHT -> {
+                        DirectionalLight directionalLight = (DirectionalLight) light;
+                        vectors.add(directionalLight.getDirection());
+                    }
+                    default -> throw new IllegalArgumentException(String.format("Light type not implemented: %s", light.getType().name()));
+                }
+
+                vectors.add(light.getColor());
+                vectors.add(new Vector3f(light.getType().getType(), light.getAmbientBrightness(), 0f));
             }
         }
 

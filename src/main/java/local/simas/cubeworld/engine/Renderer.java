@@ -3,7 +3,7 @@ package local.simas.cubeworld.engine;
 import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.entity.Camera;
 import local.simas.cubeworld.engine.entity.Entity;
-import local.simas.cubeworld.engine.entity.Light;
+import local.simas.cubeworld.engine.entity.light.Light;
 import local.simas.cubeworld.engine.helper.MathHelper;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import lombok.Builder;

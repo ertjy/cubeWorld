@@ -14,7 +14,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 cameraPosition;
 uniform int lightCount;
-uniform vec3 lights[32];
+uniform vec3 lights[48];
 
 void main() {
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
@@ -26,6 +26,10 @@ void main() {
     toCameraVector = cameraPosition - worldPosition.xyz;
 
     for (int i = 0; i < lightCount; i++) {
-        toLightVectors[i] = lights[i * 2] - worldPosition.xyz;
+        int lightType = int(lights[i * 3 + 2].x);
+
+        if (lightType == 0) {
+            toLightVectors[i] = lights[i * 3] - worldPosition.xyz;
+        }
     }
 }
