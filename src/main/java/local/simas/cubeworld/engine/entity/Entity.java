@@ -10,7 +10,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 @Data
-@Builder
+@Builder(builderMethodName = "entityBuilder")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Entity {
