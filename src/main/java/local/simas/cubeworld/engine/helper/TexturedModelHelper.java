@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoadedModelHelper {
+public class TexturedModelHelper {
     private static RawModelLoader rawModelLoader = new RawModelLoader();
     private static ModelLoader modelLoader = new ModelLoader();
     private static TextureLoader textureLoader = new TextureLoader();
