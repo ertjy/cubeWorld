@@ -21,12 +21,12 @@ public enum TexturedModelType {
     WHITE_BLOCK(1, "models/cube.obj", List.of("textures/white.jpg"), 1, 5, 1000),
     GRASS_BLOCK(2, "models/cube.obj", List.of("textures/grass.png"), 1, 5, 1000);
 
-    private long type;
-    private String modelPath;
-    private List<String> texturePaths;
-    float reflectivity;
-    float shineDamper;
-    int maxUsages;
+    private final long type;
+    private final String modelPath;
+    private final List<String> texturePaths;
+    private final float reflectivity;
+    private final float shineDamper;
+    private final int maxUsages;
 
     public static void loadAll() throws IOException {
         for (TexturedModelType texturedModelType : TexturedModelType.values()) {

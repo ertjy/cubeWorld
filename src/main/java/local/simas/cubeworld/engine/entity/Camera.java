@@ -38,14 +38,12 @@ public class Camera {
     @Builder.Default
     private float farPlane = 5000f;
 
-    private Vector2f lastCursorPosition;
+    private final Vector2f lastCursorPosition = DisplayManager.getCursorPosition();
+
+    private final Matrix4f viewMatrix = new Matrix4f();
+    private final Matrix4f viewMatrixForSkybox = new Matrix4f();
 
     public void move() {
-        if (lastCursorPosition == null) {
-            lastCursorPosition = DisplayManager.getCursorPosition();
-            return;
-        }
-
         Vector3f velocity = new Vector3f(0, 0, 0);
 
         if(DisplayManager.getKey(GLFW_KEY_W) == GLFW_PRESS) {
@@ -77,16 +75,18 @@ public class Camera {
         Vector2f newCursorPosition = new Vector2f(DisplayManager.getWindowConfig().getWidth(), DisplayManager.getWindowConfig().getHeight()).div(2);
         DisplayManager.setCursorPosition(newCursorPosition);
 
-        lastCursorPosition = new Vector2f(newCursorPosition);
+        lastCursorPosition.set(newCursorPosition);
 
         rotation.add(new Vector3f(deltaCursorPosition.y() * LOOK_SPEED, deltaCursorPosition.x() * LOOK_SPEED, 0f));
     }
 
     public Matrix4f getViewMatrix() {
-        return MathHelper.createViewMatrix(this);
+        MathHelper.updateViewMatrix(this, viewMatrix);
+        return viewMatrix;
     }
 
     public Matrix4f getViewMatrixForSkybox() {
-        return MathHelper.createViewMatrixForSkybox(this);
+        MathHelper.updateViewMatrixForSkybox(this, viewMatrixForSkybox);
+        return viewMatrixForSkybox;
     }
 }

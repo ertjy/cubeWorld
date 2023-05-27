@@ -7,8 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum BlockType {
+    AIR(null),
     WHITE(TexturedModelType.WHITE_BLOCK),
     GRASS(TexturedModelType.GRASS_BLOCK);
 
-    private TexturedModelType modelType;
+    private final TexturedModelType modelType;
 }

@@ -31,6 +31,8 @@ public class Renderer {
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1000f;
 
+    private final Matrix4f projectionMatrix = new Matrix4f();
+
     private ModelLoader modelLoader;
     private EntityShader entityShader;
     private SkyboxShader skyboxShader;
@@ -147,7 +149,7 @@ public class Renderer {
     }
 
     private void loadCamera() {
-        Matrix4f projectionMatrix = MathHelper.createProjectionMatrix(DisplayManager.getWindowConfig(), camera);
+        MathHelper.updateProjectionMatrix(DisplayManager.getWindowConfig(), camera, projectionMatrix);
 
         entityShader.start();
         entityShader.loadProjectionMatrix(projectionMatrix);

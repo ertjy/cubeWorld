@@ -25,7 +25,10 @@ public class Entity {
     @Builder.Default
     private Vector3f scale = new Vector3f(1f, 1f, 1f);
 
+    private final Matrix4f transformationMatrix = new Matrix4f();
+
     public Matrix4f getTransformationMatrix() {
-        return MathHelper.createTransformationMatrix(this);
+        MathHelper.updateTransformationMatrix(this, transformationMatrix);
+        return transformationMatrix;
     }
 }

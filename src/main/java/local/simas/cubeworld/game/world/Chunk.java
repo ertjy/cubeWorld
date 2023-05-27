@@ -1,5 +1,8 @@
 package local.simas.cubeworld.game.world;
 
+import local.simas.cubeworld.engine.data.TexturedModel;
+import local.simas.cubeworld.engine.entity.Entity;
+import local.simas.cubeworld.engine.helper.TexturedModelHelper;
 import local.simas.cubeworld.game.entity.Block;
 import local.simas.cubeworld.game.entity.BlockType;
 import lombok.AllArgsConstructor;
@@ -9,19 +12,43 @@ import lombok.NoArgsConstructor;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Chunk {
     @Builder.Default
     private Map<BlockType, Map<Vector3i, Block>> blocks = new HashMap<>();
 
+    private final Map<TexturedModel, List<Entity>> entities = new HashMap<>();
+
+    @Builder
+    public Chunk(Map<BlockType, Map<Vector3i, Block>> blocks) {
+        this.blocks = blocks;
+        clearAndRefreshEntities();
+    }
+
     public void saveToFile() {
 
+    }
+
+    private void clearAndRefreshEntities() {
+        entities.clear();
+
+        for (BlockType blockType : blocks.keySet()) {
+            Map<Vector3i, Block> positionToBlockMap = blocks.get(blockType);
+            TexturedModel texturedModel = TexturedModelHelper.getTexturedModelForType(blockType.getModelType().getType());
+
+            List<Entity> entityList = new ArrayList<>(positionToBlockMap.values().size());
+            entityList.addAll(positionToBlockMap.values());
+
+            entities.put(
+                    texturedModel,
+                    entityList
+            );
+        }
     }
 
     public static Chunk loadFromFile(String fileName) {
