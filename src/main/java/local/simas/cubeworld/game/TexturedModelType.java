@@ -17,15 +17,16 @@ public enum TexturedModelType {
             "textures/grass.png",
             "textures/grass.png",
             "textures/grass.png"
-    ), 0, 0),
-    WHITE_BLOCK(1, "models/cube.obj", List.of("textures/white.jpg"), 1, 5),
-    GRASS_BLOCK(2, "models/cube.obj", List.of("textures/grass.png"), 1, 5);
+    ), 0, 0, 1),
+    WHITE_BLOCK(1, "models/cube.obj", List.of("textures/white.jpg"), 1, 5, 1000),
+    GRASS_BLOCK(2, "models/cube.obj", List.of("textures/grass.png"), 1, 5, 1000);
 
     private long type;
     private String modelPath;
     private List<String> texturePaths;
     float reflectivity;
     float shineDamper;
+    int maxUsages;
 
     public static void loadAll() throws IOException {
         for (TexturedModelType texturedModelType : TexturedModelType.values()) {
@@ -34,7 +35,8 @@ public enum TexturedModelType {
                     texturedModelType.getModelPath(),
                     texturedModelType.getTexturePaths(),
                     texturedModelType.getReflectivity(),
-                    texturedModelType.getShineDamper()
+                    texturedModelType.getShineDamper(),
+                    texturedModelType.getMaxUsages()
             );
         }
     }

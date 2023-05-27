@@ -12,7 +12,6 @@ public abstract class EntityShader extends Shader {
         super(vertexFile, fragmentFile);
     }
 
-    public abstract void loadTransformationMatrix(Matrix4f transformationMatrix);
     public abstract void loadProjectionMatrix(Matrix4f projectionMatrix);
     public abstract void loadViewMatrix(Matrix4f viewMatrix);
     public abstract void loadCamera(Camera camera);

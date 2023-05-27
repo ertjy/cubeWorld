@@ -3,13 +3,13 @@
 in vec3 position;
 in vec2 textureCoordinates;
 in vec3 normal;
+in mat4 transformationMatrix;
 
 varying out vec2 passTextureCoordinates;
 varying out vec3 surfaceNormal;
 varying out vec3 toCameraVector;
 varying out vec3 toLightVectors[16];
 
-uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 cameraPosition;

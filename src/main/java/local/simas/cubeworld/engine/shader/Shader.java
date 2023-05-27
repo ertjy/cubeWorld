@@ -2,6 +2,7 @@ package local.simas.cubeworld.engine.shader;
 
 import local.simas.cubeworld.engine.entity.Camera;
 import local.simas.cubeworld.engine.entity.light.Light;
+import local.simas.cubeworld.engine.helper.BufferHelper;
 import local.simas.cubeworld.engine.helper.FileHelper;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -29,6 +30,8 @@ public abstract class Shader {
         programId = glCreateProgram();
         glAttachShader(programId, vertexShaderId);
         glAttachShader(programId, fragmentShaderId);
+
+        bindAttributes();
 
         glLinkProgram(programId);
         glValidateProgram(programId);
@@ -82,7 +85,7 @@ public abstract class Shader {
         FloatBuffer vectorBuffer = BufferUtils.createFloatBuffer(3 * vectors.size());
 
         for (Vector3f vector : vectors) {
-            vectorToBuffer(vector, vectorBuffer);
+            BufferHelper.putVectorInBuffer(vector, vectorBuffer);
         }
 
         vectorBuffer.flip();
@@ -101,35 +104,9 @@ public abstract class Shader {
     }
 
     protected void loadMatrix(int location, Matrix4f matrix) {
-        matrixToBuffer(matrix, matrixBuffer);
+        BufferHelper.putMatrixInBuffer(matrix, matrixBuffer);
         matrixBuffer.flip();
         glUniformMatrix4fv(location, false, matrixBuffer);
-    }
-
-    private static void vectorToBuffer(Vector3f v, FloatBuffer dest) {
-        dest.put(v.x());
-        dest.put(v.y());
-        dest.put(v.z());
-    }
-
-    private static void matrixToBuffer(Matrix4f m, FloatBuffer dest)
-    {
-        dest.put(m.m00());
-        dest.put(m.m01());
-        dest.put(m.m02());
-        dest.put(m.m03());
-        dest.put(m.m10());
-        dest.put(m.m11());
-        dest.put(m.m12());
-        dest.put(m.m13());
-        dest.put(m.m20());
-        dest.put(m.m21());
-        dest.put(m.m22());
-        dest.put(m.m23());
-        dest.put(m.m30());
-        dest.put(m.m31());
-        dest.put(m.m32());
-        dest.put(m.m33());
     }
 
     private int loadShader(String filename, int type) throws IOException {

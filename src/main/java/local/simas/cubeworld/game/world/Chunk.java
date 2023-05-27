@@ -18,7 +18,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class Chunk {
     @Builder.Default
-    private Map<Vector3i, Block> blocks = new HashMap<>();
+    private Map<BlockType, Map<Vector3i, Block>> blocks = new HashMap<>();
 
     public void saveToFile() {
 
@@ -29,13 +29,20 @@ public class Chunk {
     }
 
     public static Chunk generate(Vector3i chunkPosition) {
-        Map<Vector3i, Block> blocks = new HashMap<>();
+        Map<BlockType, Map<Vector3i, Block>> blocks = new HashMap<>();
 
         for (int x = 0; x < World.CHUNK_SIZE; x++) {
             for (int z = 0; z < World.CHUNK_SIZE; z++) {
                 for (int y = 0; y < World.WORLD_HEIGHT; y++) {
                     Vector3i blockPosition = new Vector3i(x, y, z);
-                    blocks.put(blockPosition, generateBlock(blockPosition));
+
+                    Block block = generateBlock(blockPosition);
+
+                    if (!blocks.containsKey(block.getBlockType())) {
+                        blocks.put(block.getBlockType(), new HashMap<>());
+                    }
+
+                    blocks.get(block.getBlockType()).put(blockPosition, block);
                 }
             }
         }

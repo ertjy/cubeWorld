@@ -17,7 +17,6 @@ public class DefaultEntityShader extends EntityShader {
     private static final String FRAGMENT_SHADER_FILE = "shaders/fragmentShader.glsl";
     private static final int LIGHT_COUNT = 16;
 
-    private int transformationMatrixLocation;
     private int projectionMatrixLocation;
     private int viewMatrixLocation;
     private int cameraPositionLocation;
@@ -35,11 +34,11 @@ public class DefaultEntityShader extends EntityShader {
         super.bindAttribute(0, "position");
         super.bindAttribute(1, "textureCoordinates");
         super.bindAttribute(2, "normal");
+        super.bindAttribute(3, "transformationMatrix");
     }
 
     @Override
     protected void getAllUniformLocations() {
-        transformationMatrixLocation = super.getUniformLocation("transformationMatrix");
         projectionMatrixLocation = super.getUniformLocation("projectionMatrix");
         viewMatrixLocation = super.getUniformLocation("viewMatrix");
         cameraPositionLocation = super.getUniformLocation("cameraPosition");
@@ -47,11 +46,6 @@ public class DefaultEntityShader extends EntityShader {
         lightsLocation = super.getUniformLocation("lights");
         reflectivityLocation = super.getUniformLocation("reflectivity");
         shineDamperLocation = super.getUniformLocation("shineDamper");
-    }
-
-    @Override
-    public void loadTransformationMatrix(Matrix4f matrix) {
-        super.loadMatrix(transformationMatrixLocation, matrix);
     }
 
     @Override

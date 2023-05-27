@@ -4,13 +4,11 @@ import local.simas.cubeworld.engine.DisplayManager;
 import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
 import local.simas.cubeworld.engine.entity.Camera;
-import local.simas.cubeworld.engine.entity.Entity;
 import local.simas.cubeworld.engine.entity.Skybox;
 import local.simas.cubeworld.engine.entity.light.DirectionalLight;
 import local.simas.cubeworld.engine.entity.light.Light;
 import local.simas.cubeworld.engine.helper.TexturedModelHelper;
-import local.simas.cubeworld.game.entity.Block;
-import local.simas.cubeworld.game.entity.BlockType;
+import local.simas.cubeworld.engine.loader.ModelLoader;
 import local.simas.cubeworld.game.shader.DefaultEntityShader;
 import local.simas.cubeworld.game.shader.DefaultSkyboxShader;
 import local.simas.cubeworld.game.world.Chunk;
@@ -29,7 +27,6 @@ public class GameLoop {
     private Camera camera;
     private Skybox skybox;
     private World world;
-    private List<Entity> entities;
     private List<Light> lights;
 
     public GameLoop(WindowConfig windowConfig) {
@@ -48,11 +45,12 @@ public class GameLoop {
         }
 
         camera = Camera.builder()
-                .position(new Vector3f(0f, 0f, 0f))
+                .position(new Vector3f(0f, 0f, 25f))
                 .rotation(new Vector3f(0f, 0f, 0f))
                 .build();
 
         renderer = Renderer.builder()
+                .modelLoader(new ModelLoader())
                 .entityShader(entityShader)
                 .skyboxShader(skyboxShader)
                 .camera(camera)
@@ -73,7 +71,6 @@ public class GameLoop {
                 ))
                 .build();
 
-        entities = new ArrayList<>();
         lights = new ArrayList<>();
 
         lights.add(
@@ -91,10 +88,6 @@ public class GameLoop {
             renderer.prepare();
 
             renderer.renderSkybox(skybox);
-
-            for (Entity entity : entities) {
-                renderer.renderEntity(entity, lights);
-            }
 
             worldRenderer.renderWorld(world, lights);
 

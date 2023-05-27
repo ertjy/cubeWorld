@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.nio.FloatBuffer;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -12,4 +14,7 @@ import lombok.NoArgsConstructor;
 public class LoadedModel {
     private int vaoId;
     private int vertexCount;
+    private int transformationMatrixVboId;
+    private FloatBuffer transformationMatrixBuffer;
+    private int maxUsages;
 }

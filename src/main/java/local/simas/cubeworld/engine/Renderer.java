@@ -1,17 +1,20 @@
 package local.simas.cubeworld.engine;
 
+import local.simas.cubeworld.engine.data.LoadedModel;
 import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.entity.Camera;
 import local.simas.cubeworld.engine.entity.Entity;
 import local.simas.cubeworld.engine.entity.Skybox;
 import local.simas.cubeworld.engine.entity.light.Light;
 import local.simas.cubeworld.engine.helper.MathHelper;
+import local.simas.cubeworld.engine.loader.ModelLoader;
 import local.simas.cubeworld.engine.shader.EntityShader;
 import local.simas.cubeworld.engine.shader.SkyboxShader;
 import lombok.Builder;
 import org.joml.Matrix4f;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
@@ -20,6 +23,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20C.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL31.glDrawElementsInstanced;
 
 @Builder
 public class Renderer {
@@ -27,11 +31,13 @@ public class Renderer {
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1000f;
 
+    private ModelLoader modelLoader;
     private EntityShader entityShader;
     private SkyboxShader skyboxShader;
     private Camera camera;
 
-    public Renderer(EntityShader entityShader, SkyboxShader skyboxShader, Camera camera) {
+    public Renderer(ModelLoader modelLoader, EntityShader entityShader, SkyboxShader skyboxShader, Camera camera) {
+        this.modelLoader = modelLoader;
         this.entityShader = entityShader;
         this.skyboxShader = skyboxShader;
         this.camera = camera;
@@ -66,33 +72,48 @@ public class Renderer {
         skyboxShader.stop();
     }
 
-    public void renderEntity(Entity entity, List<Light> lights) {
-        TexturedModel texturedModel = entity.getModel();
-        Matrix4f transformationMatrix = entity.getTransformationMatrix();
-        Matrix4f viewMatrix = camera.getViewMatrix();
-
+    public void renderEntities(Map<TexturedModel, List<Entity>> entities, List<Light> lights) {
         entityShader.start();
-
-        glBindVertexArray(texturedModel.getModel().getVaoId());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-
-        entityShader.loadTransformationMatrix(transformationMatrix);
-        entityShader.loadViewMatrix(viewMatrix);
+        entityShader.loadViewMatrix(camera.getViewMatrix());
         entityShader.loadLights(lights);
-        entityShader.loadReflectivity(texturedModel.getTexture().getReflectivity());
-        entityShader.loadShineDamper(texturedModel.getTexture().getShineDamper());
+//        TODO: Fix
+        entityShader.loadReflectivity(1);
+        entityShader.loadShineDamper(5);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());
+        for (TexturedModel texturedModel : entities.keySet()) {
+            glBindVertexArray(texturedModel.getModel().getVaoId());
+            glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(2);
+            glEnableVertexAttribArray(3);
+            glEnableVertexAttribArray(4);
+            glEnableVertexAttribArray(5);
+            glEnableVertexAttribArray(6);
 
-        glDrawElements(GL_TRIANGLES, texturedModel.getModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texturedModel.getTexture().getTextureId());
 
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glBindVertexArray(0);
+            List<Entity> similarEntities = entities.get(texturedModel);
+            LoadedModel loadedModel = texturedModel.getModel();
+            for (int i = 0; i <= similarEntities.size() / loadedModel.getMaxUsages(); i++) {
+                List<Entity> entityBatch = similarEntities.subList(
+                        i * loadedModel.getMaxUsages(),
+                        Math.min((i + 1) * loadedModel.getMaxUsages(), similarEntities.size())
+                );
+
+                modelLoader.updateLoadedModelWithEntities(texturedModel.getModel(), entityBatch);
+                glDrawElementsInstanced(GL_TRIANGLES, texturedModel.getModel().getVertexCount(), GL_UNSIGNED_INT, 0, entityBatch.size());
+            }
+
+            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(1);
+            glDisableVertexAttribArray(2);
+            glDisableVertexAttribArray(3);
+            glDisableVertexAttribArray(4);
+            glDisableVertexAttribArray(5);
+            glDisableVertexAttribArray(6);
+            glBindVertexArray(0);
+        }
 
         entityShader.stop();
     }

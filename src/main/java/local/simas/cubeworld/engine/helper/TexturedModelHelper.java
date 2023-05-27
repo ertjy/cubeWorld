@@ -31,9 +31,9 @@ public class TexturedModelHelper {
         texturedModelMap.put(type, texturedModel);
     }
 
-    public static void loadTexturedModelForType(Long type, String modelPath, List<String> texturePaths, float reflectivity, float shineDamper) throws IOException {
+    public static void loadTexturedModelForType(Long type, String modelPath, List<String> texturePaths, float reflectivity, float shineDamper, int maxUsages) throws IOException {
         RawModel rawModel = rawModelLoader.loadRawModelFromFile(modelPath);
-        LoadedModel loadedModel = modelLoader.loadRawModel(rawModel);
+        LoadedModel loadedModel = modelLoader.loadRawModel(rawModel, maxUsages);
 
         List<BufferedImage> rawTextures = new ArrayList<>();
 
