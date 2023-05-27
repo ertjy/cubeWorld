@@ -163,7 +163,7 @@ public class ModelLoader {
     private void createInstancedAttribute(int vboId, int attributeIndex, int coordinateSize, int stride, int offset) {
         bindVbo(GL_ARRAY_BUFFER, vboId);
 
-        glVertexAttribPointer(attributeIndex, coordinateSize, GL_FLOAT, false, stride * 4, offset * 4);
+        glVertexAttribPointer(attributeIndex, coordinateSize, GL_FLOAT, false, stride * 4, offset * 4L);
         glVertexAttribDivisor(attributeIndex, 1);
 
         unbindVbo(GL_ARRAY_BUFFER);
