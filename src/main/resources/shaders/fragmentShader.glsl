@@ -12,6 +12,8 @@ uniform vec3 lights[32];
 uniform float reflectivity;
 uniform float shineDamper;
 
+float ambientBrightness = 0.1;
+
 void main() {
     vec3 unitNormal = normalize(surfaceNormal);
     vec3 unitToCameraVector = normalize(toCameraVector);
@@ -37,6 +39,9 @@ void main() {
             vec3 specularColor = specularDampedBrightness * reflectivity * lightColor;
             totalColor += specularColor;
         }
+
+        vec3 ambientColor = ambientBrightness * lightColor;
+        totalColor += ambientColor;
     }
 
     outColor = vec4(totalColor, 1) * texture2D(textureSampler, passTextureCoordinates);
