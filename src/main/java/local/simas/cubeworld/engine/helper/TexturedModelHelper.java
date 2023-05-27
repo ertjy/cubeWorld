@@ -1,5 +1,6 @@
 package local.simas.cubeworld.engine.helper;
 
+import local.simas.cubeworld.engine.DisplayManager;
 import local.simas.cubeworld.engine.data.LoadedModel;
 import local.simas.cubeworld.engine.data.LoadedTexture;
 import local.simas.cubeworld.engine.data.RawModel;
@@ -47,5 +48,10 @@ public class TexturedModelHelper {
         }
 
         return texturedModelMap.get(type);
+    }
+
+    public static void cleanUp() {
+        textureLoader.cleanUp();
+        modelLoader.cleanUp();
     }
 }

@@ -3,13 +3,11 @@ package local.simas.cubeworld.game;
 import local.simas.cubeworld.engine.DisplayManager;
 import local.simas.cubeworld.engine.Renderer;
 import local.simas.cubeworld.engine.config.WindowConfig;
-import local.simas.cubeworld.engine.data.TexturedModel;
-import local.simas.cubeworld.engine.entities.Camera;
-import local.simas.cubeworld.engine.entities.Entity;
-import local.simas.cubeworld.engine.entities.Light;
-import local.simas.cubeworld.engine.loader.ModelLoader;
-import local.simas.cubeworld.engine.loader.RawModelLoader;
-import local.simas.cubeworld.engine.loader.TextureLoader;
+import local.simas.cubeworld.engine.entity.Camera;
+import local.simas.cubeworld.engine.entity.Entity;
+import local.simas.cubeworld.engine.entity.Light;
+import local.simas.cubeworld.engine.helper.TexturedModelHelper;
+import local.simas.cubeworld.game.entity.Cube;
 import local.simas.cubeworld.game.shader.DefaultShaderProgram;
 import org.joml.Vector3f;
 
@@ -18,9 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameLoop {
-    private RawModelLoader rawModelLoader;
-    private ModelLoader modelLoader;
-    private TextureLoader textureLoader;
     private Renderer renderer;
     private Camera camera;
     private List<Entity> entities;
@@ -30,19 +25,11 @@ public class GameLoop {
         DisplayManager.createWindow(windowConfig);
         DisplayManager.showWindow();
 
-        rawModelLoader = new RawModelLoader();
-        modelLoader = new ModelLoader();
-        textureLoader = new TextureLoader();
         DefaultShaderProgram shaderProgram = null;
-        TexturedModel texturedModel = null;
 
         try {
             shaderProgram = new DefaultShaderProgram();
-
-            texturedModel = TexturedModel.builder()
-                    .model(modelLoader.loadRawModel(rawModelLoader.loadRawModelFromFile("models/dragon.obj")))
-                    .texture(textureLoader.loadTextureFromFile("textures/white.jpg", 1, 5))
-                    .build();
+            TexturedModelType.loadAll();
         } catch (IOException ex) {
             System.exit(1);
         }
@@ -60,13 +47,29 @@ public class GameLoop {
         entities = new ArrayList<>();
         lights = new ArrayList<>();
 
-        entities.add(
-                Entity.builder()
-                        .position(new Vector3f(0f, 0f, 0f))
-                        .scale(new Vector3f(0.1f))
-                        .model(texturedModel)
-                        .build()
-        );
+        for (int x = 0; x <= 10; x++) {
+            entities.add(
+                    Cube.builder()
+                            .position(new Vector3f(x, 0f, 0f))
+                            .build()
+            );
+        }
+
+        for (int y = 0; y <= 10; y += 2) {
+            entities.add(
+                    Cube.builder()
+                            .position(new Vector3f(0f, y, 0f))
+                            .build()
+            );
+        }
+
+        for (int z = 0; z <= 10; z += 5) {
+            entities.add(
+                    Cube.builder()
+                            .position(new Vector3f(0f, 0f, z))
+                            .build()
+            );
+        }
 
         lights.add(
                 Light.builder()
@@ -77,7 +80,14 @@ public class GameLoop {
 
         lights.add(
                 Light.builder()
-                        .position(new Vector3f(-5f, 0f, 0f))
+                        .position(new Vector3f(0f, 5f, 0f))
+                        .color(new Vector3f(0f, 1f, 0f))
+                        .build()
+        );
+
+        lights.add(
+                Light.builder()
+                        .position(new Vector3f(0f, 0f, 5f))
                         .color(new Vector3f(0f, 0f, 1f))
                         .build()
         );
@@ -98,9 +108,8 @@ public class GameLoop {
     }
 
     public void cleanUp() {
-        textureLoader.cleanUp();
-        modelLoader.cleanUp();
         renderer.cleanUp();
+        TexturedModelHelper.cleanUp();
         DisplayManager.closeWindow();
     }
 }
