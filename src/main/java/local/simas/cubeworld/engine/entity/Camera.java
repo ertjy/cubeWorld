@@ -1,4 +1,4 @@
-package local.simas.cubeworld.engine.entities;
+package local.simas.cubeworld.engine.entity;
 
 import local.simas.cubeworld.engine.DisplayManager;
 import local.simas.cubeworld.engine.helper.MathHelper;

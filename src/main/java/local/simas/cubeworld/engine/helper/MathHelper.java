@@ -1,8 +1,8 @@
 package local.simas.cubeworld.engine.helper;
 
 import local.simas.cubeworld.engine.config.WindowConfig;
-import local.simas.cubeworld.engine.entities.Camera;
-import local.simas.cubeworld.engine.entities.Entity;
+import local.simas.cubeworld.engine.entity.Camera;
+import local.simas.cubeworld.engine.entity.Entity;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

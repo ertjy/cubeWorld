@@ -1,7 +1,7 @@
 package local.simas.cubeworld.game.shader;
 
-import local.simas.cubeworld.engine.entities.Camera;
-import local.simas.cubeworld.engine.entities.Light;
+import local.simas.cubeworld.engine.entity.Camera;
+import local.simas.cubeworld.engine.entity.Light;
 import local.simas.cubeworld.engine.shader.ShaderProgram;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
