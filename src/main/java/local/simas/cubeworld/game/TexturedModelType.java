@@ -1,9 +1,7 @@
 package local.simas.cubeworld.game;
 
-import local.simas.cubeworld.engine.data.TexturedModel;
 import local.simas.cubeworld.engine.helper.TexturedModelHelper;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -11,8 +9,8 @@ import java.io.IOException;
 @Getter
 @AllArgsConstructor
 public enum TexturedModelType {
-    CUBE(0, "models/cube.obj", "textures/white.jpg", 1, 5),
-    DRAGON(1, "models/dragon.obj", "textures/white.jpg", 1, 5);
+    WHITE_BLOCK(0, "models/cube.obj", "textures/white.jpg", 1, 5),
+    GRASS_BLOCK(1, "models/cube.obj", "textures/grass.png", 1, 5);
 
     private long type;
     private String modelPath;

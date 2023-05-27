@@ -7,7 +7,7 @@ import local.simas.cubeworld.engine.entity.Camera;
 import local.simas.cubeworld.engine.entity.Entity;
 import local.simas.cubeworld.engine.entity.Light;
 import local.simas.cubeworld.engine.helper.TexturedModelHelper;
-import local.simas.cubeworld.game.entity.Cube;
+import local.simas.cubeworld.game.entity.Block;
 import local.simas.cubeworld.game.shader.DefaultShaderProgram;
 import org.joml.Vector3f;
 
@@ -49,7 +49,8 @@ public class GameLoop {
 
         for (int x = 0; x <= 10; x++) {
             entities.add(
-                    Cube.builder()
+                    Block.builder()
+                            .texturedModelType(TexturedModelType.WHITE_BLOCK)
                             .position(new Vector3f(x, 0f, 0f))
                             .build()
             );
@@ -57,7 +58,8 @@ public class GameLoop {
 
         for (int y = 0; y <= 10; y += 2) {
             entities.add(
-                    Cube.builder()
+                    Block.builder()
+                            .texturedModelType(TexturedModelType.GRASS_BLOCK)
                             .position(new Vector3f(0f, y, 0f))
                             .build()
             );
@@ -65,7 +67,8 @@ public class GameLoop {
 
         for (int z = 0; z <= 10; z += 5) {
             entities.add(
-                    Cube.builder()
+                    Block.builder()
+                            .texturedModelType(TexturedModelType.GRASS_BLOCK)
                             .position(new Vector3f(0f, 0f, z))
                             .build()
             );
