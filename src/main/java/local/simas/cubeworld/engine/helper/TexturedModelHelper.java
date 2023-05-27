@@ -26,7 +26,7 @@ public class TexturedModelHelper {
         texturedModelMap.put(type, texturedModel);
     }
 
-    public static void loadLoadedModelForType(Long type, String modelPath, String texturePath, float reflectivity, float shineDamper) throws IOException {
+    public static void loadTexturedModelForType(Long type, String modelPath, String texturePath, float reflectivity, float shineDamper) throws IOException {
         RawModel rawModel = rawModelLoader.loadRawModelFromFile(modelPath);
         LoadedModel loadedModel = modelLoader.loadRawModel(rawModel);
 
